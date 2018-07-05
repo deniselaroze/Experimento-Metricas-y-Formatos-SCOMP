@@ -11,17 +11,19 @@ library(ggplot2)
 theme_set(theme_bw())
 library(stargazer)
 #library(reshape2)
-library(CBPS)
+#library(CBPS)
 library(scales)
 library(gridExtra)
-library(effects)
-library(plyr)
-library(plm)
-library(lmtest)
+#library(effects)
+#library(plm)
+#library(lmtest)
 library(xtable)
 
 
-setwd("C:/Users/Mauro/Desktop/SP_excel")#################################
+
+#setwd("C:/Users/Mauro/Desktop/SP_excel")#################################
+setwd("~/GitHub/Experimento-Metricas-y-Formatos-SCOMP/Excel_SP")
+
 
 rm(list = ls())
 
