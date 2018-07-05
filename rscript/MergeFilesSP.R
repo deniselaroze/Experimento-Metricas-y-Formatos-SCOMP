@@ -27,9 +27,9 @@ setwd("~/GitHub/Experimento-Metricas-y-Formatos-SCOMP/Excel_SP")
 
 rm(list = ls())
 
-##################################
-### Generating and merging files
-#################################
+###########################################
+### Creando un sólo DF con todas los datos
+###########################################
 
 ## Leer nombre de archivos
 
@@ -47,15 +47,19 @@ for(bf in perfil.files){
 
 table(table(all.files$perfil))
 ##Agrego ID Unico = Grupo + Perfil
-all.files <- cbind(id = paste(all.files$grupo,all.files$perfil),all.files )
+all.files <- cbind(id = paste0(all.files$grupo,".", all.files$perfil),all.files )
 
 ##Cambio ID a variable Categorica
-str(all.files)
-names(all.files)
-numerize <- names(all.files)[c(1)]
-for(nu in numerize){
-  all.files[,nu]<- as.numeric(all.files[ ,nu])
-}
+
+all.files$nu<-as.numeric(all.files$id)
+
+
+#str(all.files)
+#names(all.files)
+#numerize <- names(all.files)[c(1)]
+#for(nu in numerize){
+#  all.files[,nu]<- as.numeric(all.files[ ,nu])
+#}
 
 ## Genero nuevo archivo con los cambios
 write.table(all.files, "nuevaBD.csv", sep = ";", quote = F, row.names = T)
@@ -64,13 +68,17 @@ nuevaBD <- read.csv2("nuevaBD.csv", as.is = T)
 
 # Ejemplo  - Tabla cuando ID = 1
 #################################
-data_sub <- subset(all.files, (all.files$id==1))
-tbl<-ddply(data_sub, ~ perfil, summarize,  
-           razon_social = data_sub$razon_social,
-           pension_bruta = data_sub$val_uf_pension_bru,
-           riesgo = data_sub$riesgo
-)
+data_sub <- subset(all.files, nu==1)
+tbl<-all.files[all.files$nu==1, c("razon_social", "val_uf_pension_bru", "riesgo")]
 
-names(tbl)<-c("Perfil", "Valor Pensión", "Razon Social", "Clasificación de Riesgo")
-tbl<-xtable(tbl, caption="Treatment Summaries", label="table:sum")
-print(tbl)
+
+#tbl<-ddply(data_sub, ~ perfil, summarize,  
+#           razon_social = data_sub$razon_social,
+#           pension_bruta = data_sub$val_uf_pension_bru,
+#           riesgo = data_sub$riesgo
+#)
+
+names(tbl)<-c("Valor Pensión", "Razon Social", "Clasificación de Riesgo")
+tbl<-xtable(tbl, caption="Leyenda del Control" )
+print(tbl, type="HTML", file="Tratamientos/control.html", include.rownames=FALSE  )
+  
