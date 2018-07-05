@@ -1,0 +1,25 @@
+Les comento dos puntos después de conversación telefónica con Denise:
+
+1. Nomenclatura pares de modalidades de RV, RT-RDV 2 años, y RT-RDV 5 años: 
+Cada archivo tiene la siguiente nomenclatura: 
+
+co_#letra#letra.xlsx (co=combinación, #letra corresponde a las tres opciones: #=1,2 o 3, 
+donde (1) RV simple (2) RT-RVD 2 años (3) RT-RDV 5 años; y letra=a,b, donde a= sin período garantizado, 
+y b=con 10 años de periodo garantizado).  
+
+Entonces, por ejemplo el archivo co_1a3b.xlsx corresponde a las ofertas que una misma persona, según perfil de ingreso y sexo, 
+recibió por 1a=RV sin periodo garantizado y 3b=RT-RDV 5 años, con 10 años de período garantizado.
+
+2. Hay 6 archivos que tienen la siguiente nomenclatura: co_#letra_rp.xlsx  
+(son seis porque #letra=1a, 1b, 2a, 2b, 3a y 3b). 
+
+Para cada uno de estos archivos, sus correspondientes ofertas de Retiro Programado (RP) están en el archivo co_rp.xls 
+(no estoy segura si se los mandé, así es que va adjunto por si acaso). 
+
+Si se fijan, en los archivos co_#letra_rp.xlsx solo aparecen las ofertas por nivel de ingreso y sexo para la parte de #letra. 
+En el archivo  co_rp.xls están las ofertas de retiro programado por sexo y nivel de ingreso, para cada uno de estos seis archivos. 
+
+Por ejemplo, el archivo co_2a_rp.xlsx  tendría que asociarse con las ofertas de retiro programado 
+(6 para cada persona nivel de ingreso/sexo, dado que hay 6 AFPs) para la mismas personas por nivel de ingreso y sexo en el archivo  
+co_rp.xls entre las filas 98 y 145.
+
