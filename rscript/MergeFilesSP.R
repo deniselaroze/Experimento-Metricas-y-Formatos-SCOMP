@@ -1,7 +1,7 @@
 
 ################################################ 
 ### Data Management for Excel SP
-### Jun 2018
+### Jul 2018
 ### Denise Laroze / Mlopez
 ################################################
 
@@ -18,6 +18,7 @@ library(gridExtra)
 #library(plm)
 #library(lmtest)
 library(xtable)
+library(tools)
 
 
 
@@ -42,17 +43,20 @@ for(bf in perfil.files){
   temp <- read.csv2(bf, as.is = T)
   valid_col <- ncol(temp)-3
   for(i in 1:valid_col)temp[ , i] <- gsub("\\s","", temp[, i])
+  df <- sub(".+/CSV/", "\\1", bf)
+  df<-file_path_sans_ext(df)
+  temp$pid <- df
   all.files <- rbind.fill(all.files, temp)
 }
 
 table(table(all.files$perfil))
 ##Agrego ID Unico = Grupo + Perfil
-all.files <- cbind(id = paste0(all.files$grupo,".", all.files$perfil),all.files )
+all.files <- cbind(id = paste0( all.files$grupo,".", all.files$perfil,".", all.files$pid),all.files )
 
 ##Cambio ID a variable Categorica
 
-all.files$nu<-as.numeric(all.files$id)
-
+all.files$nid<-as.numeric(all.files$id)
+table(all.files$nid)
 
 #str(all.files)
 #names(all.files)
@@ -68,17 +72,24 @@ nuevaBD <- read.csv2("nuevaBD.csv", as.is = T)
 
 # Ejemplo  - Tabla cuando ID = 1
 #################################
-data_sub <- subset(all.files, nu==1)
-tbl<-all.files[all.files$nu==1, c("razon_social", "val_uf_pension_bru", "riesgo")]
-
-
-#tbl<-ddply(data_sub, ~ perfil, summarize,  
-#           razon_social = data_sub$razon_social,
-#           pension_bruta = data_sub$val_uf_pension_bru,
-#           riesgo = data_sub$riesgo
-#)
-
+#data_sub <- subset(all.files, nid==2)
+tbl<-all.files[all.files$nid==2, c("razon_social", "val_uf_pension_bru", "riesgo")]
 names(tbl)<-c("Valor Pensión", "Razon Social", "Clasificación de Riesgo")
 tbl<-xtable(tbl, caption="Leyenda del Control" )
 print(tbl, type="HTML", file="Tratamientos/control.html", include.rownames=FALSE  )
   
+
+## Function
+
+fcn.control <- function(gender, econ, mode, pair){
+  id<-paste0(gender, econ, ".", mode, ".", pair)
+  tbl<-all.files[all.files$id==id, c("razon_social", "val_uf_pension_bru", "riesgo")]
+  names(tbl)<-c( "Razón Social", "Valor Pensión", "Clasificación de Riesgo")
+  tbl<-xtable(tbl, caption="Leyenda del Control" )
+  return(print(tbl, type="HTML", file=paste0("Tratamientos/control", id ,".html"), include.rownames=FALSE  ))
+}
+
+
+
+fcn.control("F", "nivel2", "1a_RVI_simple", "co_1a_rp" )
+
