@@ -19,6 +19,7 @@ library(gridExtra)
 #library(lmtest)
 library(xtable)
 library(tools)
+library(RColorBrewer)
 
 
 
@@ -72,7 +73,7 @@ nuevaBD <- read.csv2("nuevaBD.csv", as.is = T)
 # Ejemplo  - Tabla cuando ID = 1
 #################################
 #data_sub <- subset(all.files, nid==2)
-tbl<-all.files[all.files$nid==2, c("razon_social", "val_uf_pension_bru", "riesgo")]
+tbl<-all.files[all.files$id==2, c("razon_social", "val_uf_pension_bru", "riesgo")]
 names(tbl)<-c("Valor Pensión", "Razon Social", "Clasificación de Riesgo")
 tbl<-xtable(tbl, caption="Leyenda del Control" )
 print(tbl, type="HTML", file="Tratamientos/control.html", include.rownames=FALSE  )
@@ -171,50 +172,49 @@ fcn.treat3("F", "nivel2", "1a_RVI_simple", "co_1a_rp" )
 ### Function - Treatment 4 // Simulation code, this still needs to be adjusted and tested using real data
 ##########################
 
-n<-12
+all.files$VPN<-all.files$val_pesos_pension_bru*12*20
 
 
-df$Company <- factor(df$Company, levels = df$Company[rev(order(df$VPE))])
-max<-max(df$VPE)+450000
-min<-min(df$VPE)-500000
+fcn.treat4 <- function(gender, econ, mode, pair){
+  id<-paste0(gender, econ, ".", mode, ".", pair)
+  tbl<-all.files[all.files$id==id, c("razon_social", "val_pesos_pension_bru", "VPN")]
+  tbl$val_pesos_pension_bru<-round( tbl$val_pesos_pension_bru, 0)
+  
+  n<-nrow(tbl)
+  
+  
+  tbl$Company <- factor(tbl$razon_social, levels = tbl$razon_social[rev(order(tbl$VPN))])
+  max<-max(tbl$VPN, na.rm=T)+1500000
+  min<-min(tbl$VPN, na.rm=T)-1000000 
+  point <- format_format(big.mark = ".", decimal.mark = ",", scientific = FALSE)
 
-uf<-max(df$PensionUF)
-uf<-format(uf, decimal.mark = ",", scientific = FALSE)
-vpem<-max(df$VPE_mensual)
-vpem<-format(vpem, big.mark = ".", scientific = FALSE)
-
-
-chart_note0 <- paste("Oferta ", df$Company[df$VPE_mensual==max(df$VPE_mensual)], ": " , uf," UF mensuales",sep="")
-chart_note2 <- paste(vpem," pesos",sep="")
-chart_note1 <- paste(uf," UF",sep="")
-
-point <- format_format(big.mark = ".", decimal.mark = ",", scientific = FALSE)
-
-options(scipen=1000)
-p<-ggplot(data=df, aes(x=Company, y=VPE, fill = Company)) + 
-  geom_bar(stat="identity") +
-  #geom_text(aes(label=VPE_mensual, vjust=-0.8)) +
-  scale_fill_manual(values= rev(colorRampPalette(brewer.pal(11, "RdYlGn"))(n))) +
-  theme(legend.position="") +
-  scale_y_continuous(labels=function(x) format(x, big.mark = ".",decimal.mark=",",
+  options(scipen=1000)
+  p<-ggplot(data=tbl, aes(x=Company, y=VPN, fill = Company)) + 
+    geom_bar(stat="identity") +
+    #geom_text(aes(label=VPE_mensual, vjust=-0.8)) +
+    scale_fill_manual(values= rev(colorRampPalette(brewer.pal(11, "RdYlGn"))(n))) +
+    theme(legend.position="") +
+    scale_y_continuous(labels=function(x) format(x, big.mark = ".",decimal.mark=",",
                                                scientific = FALSE)#,
                      #                    sec.axis = sec_axis(~./240, name = "Pensión Mensual (pesos)", labels=function(x) format(x, big.mark = ".", decimal.mark = ",", scientific = FALSE))
-  )+
-  ylab("Total Valor Económico Pensión")  + xlab("")  +
-  theme(axis.text.y=element_text(size=rel(1.4) , angle=90),
+    )+
+    ylab("Total Valor Económico Pensión")  + xlab("")  +
+    theme(axis.text.y=element_text(size=rel(1.4) , angle=90),
         axis.title.y=element_text(size=rel(1.8) ),
         axis.text.x=element_text(size=rel(1.4), angle=90),
         panel.grid.major.x = element_blank(),
         panel.grid.major.y = element_line(colour = "Grey30", linetype = "dashed"))+
-  geom_text(aes(label = paste0("$",point(pensionPesos)) , angle=90, size = 2, vjust = 0.4, hjust= -0.1)) +
-  coord_cartesian(ylim=c(min,max))  #coord_flip() +
+    geom_text(aes(label = paste0("$",point(val_pesos_pension_bru)) , angle=90, size = 2, vjust = 0.4, hjust= -0.1)) +
+    coord_cartesian(ylim=c(min,max))  #coord_flip() +
 
-p 
+return(ggsave(paste0("Tratamientos/Treat4", id ,".png"), width=30, height = 25, units = "cm")) 
 
-ggsave("Treatment_4c.png", width=30, height = 15, units = "cm")
+}
 
 
+fcn.treat4("M", "nivel4", "2a_RT_RVD2agnos_sinGarantizar", "co_2a3a" )
 
+fcn.treat4("F", "nivel1", "3a_RT_RVD5agnos_sinGarantizar", "co_3a3b" )
 
 
 
