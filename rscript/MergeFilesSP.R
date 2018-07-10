@@ -88,9 +88,10 @@ fcn.control <- function(gender, econ, mode, pair){
   tbl<-all.files[all.files$id==id, c("razon_social", "val_uf_pension_bru", "riesgo")]
   names(tbl)<-c( "Razón Social", "Valor Pensión UF", "Clasificación de Riesgo")
   tbl<-xtable(tbl, caption="Leyenda del Control" )
-  return(print(tbl, type="HTML", file=paste0("Tratamientos/control", id ,".html"), include.rownames=FALSE  ))
+  return(print(tbl, type="HTML", file=paste0("Tratamientos/control", id ,".html"), include.rownames=FALSE, 
+               format.args=list(big.mark = ".", decimal.mark = ","))     
+  )
 }
-
 
 fcn.control("F", "nivel2", "1a_RVI_simple", "co_1a_rp" )
 
@@ -106,8 +107,7 @@ fcn.treat1 <- function(gender, econ, mode, pair){
   tbl<-xtable(tbl, caption="Leyenda del Tratamiento 1" )
   digits(tbl) <- c(0,0,0,0)
   return(print(tbl, type="HTML", file=paste0("Tratamientos/Treat1", id ,".html"), include.rownames=FALSE,
-               format.args=list(big.mark = ".", decimal.mark =
-                                  ","))     
+               format.args=list(big.mark = ".", decimal.mark = ","))     
   )
 }
 
@@ -123,7 +123,7 @@ fcn.treat1("F", "nivel2", "1a_RVI_simple", "co_1a_rp" )
 
 all.files$VPN<-all.files$val_pesos_pension_bru*12*20
 
-fcn.treat3 <- function(gender, econ, mode, pair){
+fcn.treat2 <- function(gender, econ, mode, pair){
   id<-paste0(gender, econ, ".", mode, ".", pair)
   tbl<-all.files[all.files$id==id, c("razon_social", "val_pesos_pension_bru", "VPN")]
   tbl$val_pesos_pension_bru<-round( tbl$val_pesos_pension_bru, 0)
@@ -131,13 +131,12 @@ fcn.treat3 <- function(gender, econ, mode, pair){
   tbl<-xtable(tbl, caption="Leyenda del Tratamiento 2" )
   digits(tbl) <- c(0,0,0,0)
   return(print(tbl, type="HTML", file=paste0("Tratamientos/Treat2", id ,".html"), include.rownames=FALSE, 
-               format.args=list(big.mark = ".", decimal.mark =
-                                  ","))     
+               format.args=list(big.mark = ".", decimal.mark = ","))     
   )
 }
 
 
-fcn.treat3("F", "nivel2", "1a_RVI_simple", "co_1a_rp" )
+fcn.treat2("F", "nivel2", "1a_RVI_simple", "co_1a_rp" )
 
 
 
@@ -158,8 +157,7 @@ fcn.treat3 <- function(gender, econ, mode, pair){
   tbl<-xtable(tbl, caption="Leyenda del Tratamiento 3" )
   digits(tbl) <- c(0,0,0,0,0)
   return(print(tbl, type="HTML", file=paste0("Tratamientos/Treat3", id ,".html"), include.rownames=FALSE, 
-               format.args=list(big.mark = ".", decimal.mark =
-                                  ","))     
+               format.args=list(big.mark = ".", decimal.mark = ","))     
          )
 }
 
