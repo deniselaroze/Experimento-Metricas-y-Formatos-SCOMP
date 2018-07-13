@@ -51,8 +51,13 @@ for(bf in perfil.files){
 }
 
 table(table(all.files$perfil))
+unique(all.files$perfil2)
+
+all.files$perfil2<-substr(all.files$perfil, start = 1, stop = 2)
+unique(all.files$perfil2)
+
 ##Agrego ID Unico = Grupo + Perfil
-all.files <- cbind(id = paste0( all.files$grupo,".", all.files$perfil,".", all.files$pid),all.files )
+all.files <- cbind(id = paste0( all.files$grupo,".", all.files$perfil2,".", all.files$pid),all.files )
 
 ##Cambio ID a variable Categorica, para hacer pruebas
 all.files$nid<-as.numeric(all.files$id)
@@ -68,7 +73,12 @@ all.files$val_pesos_pension_bru<-all.files$val_uf_pension_bru*27161.48
 ## Genero nuevo archivo con los cambios
 write.table(all.files, "nuevaBD.csv", sep = ";", quote = F, row.names = T)
 
-nuevaBD <- read.csv2("nuevaBD.csv", as.is = T)
+#################### End merge #####################################
+
+
+
+
+all.files <- read.csv2("nuevaBD.csv", as.is = T)
 
 # Ejemplo  - Tabla cuando ID = 1
 #################################
@@ -93,7 +103,6 @@ fcn.control <- function(gender, econ, mode, pair){
   )
 }
 
-fcn.control("F", "nivel2", "1a_RVI_simple", "co_1a_rp" )
 
 ##########################
 ### Function - Treatment 1
@@ -112,16 +121,10 @@ fcn.treat1 <- function(gender, econ, mode, pair){
 }
 
 
-fcn.treat1("F", "nivel2", "1a_RVI_simple", "co_1a_rp" )
-
-
-
 ##########################
 ### Function - Treatment 2
 ##########################
 
-
-all.files$VPN<-all.files$val_pesos_pension_bru*12*20
 
 fcn.treat2 <- function(gender, econ, mode, pair){
   id<-paste0(gender, econ, ".", mode, ".", pair)
@@ -136,16 +139,9 @@ fcn.treat2 <- function(gender, econ, mode, pair){
 }
 
 
-fcn.treat2("F", "nivel2", "1a_RVI_simple", "co_1a_rp" )
-
-
-
-
 ##########################
 ### Function - Treatment 3
 ##########################
-
-all.files$VPN<-all.files$val_pesos_pension_bru*12*20
 
 fcn.treat3 <- function(gender, econ, mode, pair){
   id<-paste0(gender, econ, ".", mode, ".", pair)
@@ -162,16 +158,9 @@ fcn.treat3 <- function(gender, econ, mode, pair){
 }
 
 
-fcn.treat3("F", "nivel2", "1a_RVI_simple", "co_1a_rp" )
-
-
-
 ##########################
 ### Function - Treatment 4 // Simulation code, this still needs to be adjusted and tested using real data
 ##########################
-
-all.files$VPN<-all.files$val_pesos_pension_bru*12*20
-
 
 fcn.treat4 <- function(gender, econ, mode, pair){
   id<-paste0(gender, econ, ".", mode, ".", pair)
@@ -210,11 +199,44 @@ return(ggsave(paste0("Tratamientos/Treat4", id ,".png"), width=30, height = 25, 
 }
 
 
-fcn.treat4("M", "nivel4", "2a_RT_RVD2agnos_sinGarantizar", "co_2a3a" )
+##################################
+###### Generación de tratamientos
+##################################
 
-fcn.treat4("F", "nivel1", "3a_RT_RVD5agnos_sinGarantizar", "co_3a3b" )
+# Manual, para pruebas
+
+all.files$VPN<-all.files$val_pesos_pension_bru*12*20
+
+fcn.control("F", "nivel2", "1a_RVI_simple", "co_1a_rp" )
+
+fcn.treat1("F", "nivel2", "1a", "co_1a_rp" )
+
+fcn.treat2("F", "nivel2", "1a", "co_1a_rp" )
+
+fcn.treat3("F", "nivel2", "1a", "co_1a_rp" )
+
+fcn.treat4("M", "nivel4", "2a", "co_2a3a" )
+
+fcn.treat4("F", "nivel1", "3a", "co_3a3b" )
 
 
+
+# Simulación datosde Qualtrics
+
+gender<-"F"
+income<-"nivel2"
+mode1<- "1"
+mode2<- "3"
+pg<-"b"
+
+mode1pg<-paste0(mode1,pg)
+mode2pg<-paste0(mode2,pg)
+
+
+match<-paste0("co_", mode1pg, mode2pg)
+
+
+fcn.treat3(gender, income, modepg, match)
 
 
 
