@@ -71,16 +71,17 @@ all.files$val_pesos_pension_bru<-all.files$val_uf_pension_bru*27161.48
 
 
 ## Genero nuevo archivo con los cambios
-write.table(all.files, "nuevaBD.csv", sep = ";", quote = F, row.names = T)
+
+save(all.files, file = "nuevaBD.RData")
 
 #################### End merge #####################################
 
 
 
 
-all.files <- read.csv2("nuevaBD.csv", as.is = T)
+load("nuevaBD.RData")
 
-# Ejemplo  - Tabla cuando ID = 1
+# Ejemplo  - Tabla cuando ID = 2
 #################################
 #data_sub <- subset(all.files, nid==2)
 tbl<-all.files[all.files$id==2, c("razon_social", "val_uf_pension_bru", "riesgo")]
@@ -98,7 +99,7 @@ fcn.control <- function(gender, econ, mode, pair){
   tbl<-all.files[all.files$id==id, c("razon_social", "val_uf_pension_bru", "riesgo")]
   names(tbl)<-c( "Razón Social", "Valor Pensión UF", "Clasificación de Riesgo")
   tbl<-xtable(tbl, caption="Leyenda del Control" )
-  return(print(tbl, type="HTML", file=paste0("Tratamientos/control", id ,".html"), include.rownames=FALSE, 
+  return(print(tbl, type="HTML", file=paste0("Tratamientos/control", QID ,".html"), include.rownames=FALSE, 
                format.args=list(big.mark = ".", decimal.mark = ","))     
   )
 }
@@ -115,7 +116,7 @@ fcn.treat1 <- function(gender, econ, mode, pair){
   names(tbl)<-c( "Razón Social", "Valor Pensión $", "Clasificación de Riesgo")
   tbl<-xtable(tbl, caption="Leyenda del Tratamiento 1" )
   digits(tbl) <- c(0,0,0,0)
-  return(print(tbl, type="HTML", file=paste0("Tratamientos/Treat1", id ,".html"), include.rownames=FALSE,
+  return(print(tbl, type="HTML", file=paste0("Tratamientos/Treat1", QID,".html"), include.rownames=FALSE,
                format.args=list(big.mark = ".", decimal.mark = ","))     
   )
 }
@@ -133,7 +134,7 @@ fcn.treat2 <- function(gender, econ, mode, pair){
   names(tbl)<-c( "Razón Social", "Valor Pensión $",  "Total VPN Pensión")
   tbl<-xtable(tbl, caption="Leyenda del Tratamiento 2" )
   digits(tbl) <- c(0,0,0,0)
-  return(print(tbl, type="HTML", file=paste0("Tratamientos/Treat2", id ,".html"), include.rownames=FALSE, 
+  return(print(tbl, type="HTML", file=paste0("Tratamientos/Treat2", QID ,".html"), include.rownames=FALSE, 
                format.args=list(big.mark = ".", decimal.mark = ","))     
   )
 }
@@ -152,14 +153,14 @@ fcn.treat3 <- function(gender, econ, mode, pair){
   names(tbl)<-c( "Razón Social", "Valor Pensión $",  "Total VPN Pensión", "VPN dif")
   tbl<-xtable(tbl, caption="Leyenda del Tratamiento 3" )
   digits(tbl) <- c(0,0,0,0,0)
-  return(print(tbl, type="HTML", file=paste0("Tratamientos/Treat3", id ,".html"), include.rownames=FALSE, 
+  return(print(tbl, type="HTML", file=paste0("Tratamientos/Treat3", QID ,".html"), include.rownames=FALSE, 
                format.args=list(big.mark = ".", decimal.mark = ","))     
          )
 }
 
 
 ##########################
-### Function - Treatment 4 // Simulation code, this still needs to be adjusted and tested using real data
+### Function - Treatment 4 
 ##########################
 
 fcn.treat4 <- function(gender, econ, mode, pair){
@@ -194,16 +195,18 @@ fcn.treat4 <- function(gender, econ, mode, pair){
     geom_text(aes(label = paste0("$",point(val_pesos_pension_bru)) , angle=90, size = 2, vjust = 0.4, hjust= -0.1)) +
     coord_cartesian(ylim=c(min,max))  #coord_flip() +
 
-return(ggsave(paste0("Tratamientos/Treat4", id ,".png"), width=30, height = 25, units = "cm")) 
+return(ggsave(paste0("Tratamientos/Treat4", QID ,".png"), width=30, height = 25, units = "cm")) 
 
 }
 
 
 ##################################
-###### Generación de tratamientos
+###### Generating treatments
 ##################################
 
-# Manual, para pruebas
+# Manual treatment generation, for testing
+QID<-"qualtricsID"
+
 
 all.files$VPN<-all.files$val_pesos_pension_bru*12*20
 
@@ -221,22 +224,39 @@ fcn.treat4("F", "nivel1", "3a", "co_3a3b" )
 
 
 
-# Simulación datosde Qualtrics
+# Simulation data that would come from Qualtrics
 
 gender<-"F"
-income<-"nivel2"
-mode1<- "1"
-mode2<- "3"
+econ<-"nivel1"
+mode1<- "2"
+mode2<- "1"
 pg<-"b"
 
 mode1pg<-paste0(mode1,pg)
 mode2pg<-paste0(mode2,pg)
 
 
-match<-paste0("co_", mode1pg, mode2pg)
+pairvct<-c(mode1pg, mode2pg)
+pairvct
+pairvct<-sort(pairvct)
+pairvct
 
 
-fcn.treat3(gender, income, modepg, match)
+pair<-paste0("co_", pairvct[1], pairvct[2])
+
+QID<-"qualtricsID" # to be replaced by a real Qualtrics ID code, unique to each participant
+
+
+vf<-c( fcn.control,  fcn.treat1,  fcn.treat2,  fcn.treat3,   fcn.treat4)
+
+#### Random treatment assignment
+selected<-sample(vf, 2, replace=FALSE)
+selected
+
+#### Generating treatment images
+print(selected[[1]](gender, econ, pairvct[1], pair))
+print(selected[[2]](gender, econ, pairvct[2], pair))
+
 
 
 
