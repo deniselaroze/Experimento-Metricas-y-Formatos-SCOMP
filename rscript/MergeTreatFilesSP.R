@@ -17,17 +17,18 @@ library(tools)
 library(RColorBrewer)
 library(htmlTable)
 library(plyr)
-
+library(gridBase)
+> library(grid)
 
 #setwd("C:/Users/Mauro/Desktop/SP_excel")#################################
 
 
-setwd("C:/Users/Denise Laroze Prehn/Dropbox/CESS-Santiago/archive/Pensions - JFF/Design info/certificados SP")
+setwd("C:/Users/Denise Laroze P/Dropbox/CESS-Santiago/archive/Pensions - JFF/Design info/certificados SP")
 rm(list = ls())
 
 #Parameters
 pesouf<-27205.11 ### 3 de agosto de 2018
-git<-"C:/Users/Denise Laroze Prehn/Documents/GitHub/Experimento-Metricas-y-Formatos-SCOMP/Tratamientos/"
+git<-"C:/Users/Denise Laroze P/Documents/GitHub/Experimento-Metricas-y-Formatos-SCOMP/Tratamientos/"
 
 
 
@@ -98,6 +99,9 @@ save(all.files, file = "nuevaBD.RData")
 
 
 load("nuevaBD.RData")
+
+all.files$VPN<-all.files$val_pesos_pension*12*20
+QID<-"QualtricsID"
 
 # Ejemplo  - Tabla cuando ID = 2
 #################################
@@ -425,7 +429,12 @@ fcn.treat4 <- function(gender, econ, mode, pair){
   } else {print("Retiro Programado")
   }
   
-
+  y_labels <- purrr::map2(title, paste0("Total Valor Económico Pensión"), 
+                          ~ bquote(atop(.(.x), scriptstyle(.(.y))))
+  )
+  y_labels <- purrr::invoke(expression, y_labels)
+  
+  
   options(scipen=1000)
   p<-ggplot(data=tbl, aes(x=Company, y=VPN, fill = Company)) + 
     geom_bar(stat="identity") +
@@ -436,21 +445,23 @@ fcn.treat4 <- function(gender, econ, mode, pair){
                                                  scientific = FALSE)#,
                        #                    sec.axis = sec_axis(~./240, name = "Pensión Mensual (pesos)", labels=function(x) format(x, big.mark = ".", decimal.mark = ",", scientific = FALSE))
     )+
-    ylab(paste(title, "\n Total Valor Económico Pensión\n"))  + xlab("")  +
+    ylab(y_labels)  + xlab("")  +
     theme(axis.text.y=element_text(size=15 , angle=90),
-          axis.title.y=element_text(size=30),
+          axis.title.y=element_text(size=20),
           axis.text.x=element_text(size=15, angle=90),
           panel.grid.major.x = element_blank(),
           panel.grid.major.y = element_line(colour = "Grey30", linetype = "dashed"))+
     geom_text(aes(label = paste0("$",point(val_pesos_pension)) , angle=90, size = 6, vjust = 0.4, hjust= -0.1)) +
     geom_text(aes(label = paste("Opción",point(opcion), ":") ), size=5 , angle=90, vjust = 0.4, hjust= 1) +
     coord_cartesian(ylim=c(min,max))  #coord_flip() +
-
-return(ggsave(paste0(git, "Treat4", QID ,".png"), width=25, height = 30, units = "cm")) 
-
+  
+  return(ggsave(paste0(git, "Treat4", QID ,".png"), width=25, height = 30, units = "cm")) 
+  
 }
-fcn.treat4("F", "nivel4", "2b", "co_2brp" )
 
+
+
+fcn.treat4("F", "nivel4", "1a", "co_1arp" )
 
 ##################################
 ###### Generating treatments
