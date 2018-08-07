@@ -24,10 +24,14 @@ library(RColorBrewer)
 
 
 #setwd("C:/Users/Mauro/Desktop/SP_excel")#################################
-setwd("~/GitHub/Experimento-Metricas-y-Formatos-SCOMP/Excel_SP")
 
 
+setwd("C:/Users/Denise Laroze Prehn/Dropbox/CESS-Santiago/archive/Pensions - JFF/Design info/certificados SP/csv")
 rm(list = ls())
+git<-"/Users/Denise Laroze Prehn/Documents/GitHub/Experimento-Metricas-y-Formatos-SCOMP/Tratamientos"
+
+
+
 
 ###########################################
 ### Creando un sólo DF con todas los datos
@@ -99,7 +103,7 @@ fcn.control <- function(gender, econ, mode, pair){
   tbl<-all.files[all.files$id==id, c("razon_social", "val_uf_pension_bru", "riesgo")]
   names(tbl)<-c( "Razón Social", "Valor Pensión UF", "Clasificación de Riesgo")
   tbl<-xtable(tbl, caption="Leyenda del Control" )
-  return(print(tbl, type="HTML", file=paste0("Tratamientos/control", QID ,".html"), include.rownames=FALSE, 
+  return(print(tbl, type="HTML", file=paste0(git, "control", QID ,".html"), include.rownames=FALSE, 
                format.args=list(big.mark = ".", decimal.mark = ","))     
   )
 }
@@ -116,7 +120,7 @@ fcn.treat1 <- function(gender, econ, mode, pair){
   names(tbl)<-c( "Razón Social", "Valor Pensión $", "Clasificación de Riesgo")
   tbl<-xtable(tbl, caption="Leyenda del Tratamiento 1" )
   digits(tbl) <- c(0,0,0,0)
-  return(print(tbl, type="HTML", file=paste0("Tratamientos/Treat1", QID,".html"), include.rownames=FALSE,
+  return(print(tbl, type="HTML", file=paste0(git, "Treat1", QID,".html"), include.rownames=FALSE,
                format.args=list(big.mark = ".", decimal.mark = ","))     
   )
 }
@@ -134,7 +138,7 @@ fcn.treat2 <- function(gender, econ, mode, pair){
   names(tbl)<-c( "Razón Social", "Valor Pensión $",  "Total VPN Pensión")
   tbl<-xtable(tbl, caption="Leyenda del Tratamiento 2" )
   digits(tbl) <- c(0,0,0,0)
-  return(print(tbl, type="HTML", file=paste0("Tratamientos/Treat2", QID ,".html"), include.rownames=FALSE, 
+  return(print(tbl, type="HTML", file=paste0(git, "Treat2", QID ,".html"), include.rownames=FALSE, 
                format.args=list(big.mark = ".", decimal.mark = ","))     
   )
 }
@@ -153,7 +157,7 @@ fcn.treat3 <- function(gender, econ, mode, pair){
   names(tbl)<-c( "Razón Social", "Valor Pensión $",  "Total VPN Pensión", "VPN dif")
   tbl<-xtable(tbl, caption="Leyenda del Tratamiento 3" )
   digits(tbl) <- c(0,0,0,0,0)
-  return(print(tbl, type="HTML", file=paste0("Tratamientos/Treat3", QID ,".html"), include.rownames=FALSE, 
+  return(print(tbl, type="HTML", file=paste0(git, "Treat3", QID ,".html"), include.rownames=FALSE, 
                format.args=list(big.mark = ".", decimal.mark = ","))     
          )
 }
@@ -195,7 +199,7 @@ fcn.treat4 <- function(gender, econ, mode, pair){
     geom_text(aes(label = paste0("$",point(val_pesos_pension_bru)) , angle=90, size = 2, vjust = 0.4, hjust= -0.1)) +
     coord_cartesian(ylim=c(min,max))  #coord_flip() +
 
-return(ggsave(paste0("Tratamientos/Treat4", QID ,".png"), width=30, height = 25, units = "cm")) 
+return(ggsave(paste0(got, "Treat4", QID ,".png"), width=30, height = 25, units = "cm")) 
 
 }
 
