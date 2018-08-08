@@ -6,14 +6,11 @@
 ################################################
 
 library(plyr)
-library(foreign)
 library(ggplot2)
 theme_set(theme_bw())
-library(stargazer)
 library(scales)
 library(gridExtra)
 library(xtable)
-library(tools)
 library(RColorBrewer)
 library(htmlTable)
 #library(gridBase)
@@ -34,94 +31,11 @@ pesouf<-27205.11 ### 3 de agosto de 2018
 git<-"C:/Users/Denise Laroze P/Documents/GitHub/Experimento-Metricas-y-Formatos-SCOMP/Tratamientos/"
 git<-"~/GitHub/Experimento-Metricas-y-Formatos-SCOMP/Tratamientos/"
 
-
-
-###########################################
-### Creando un sólo DF con todas los datos
-###########################################
-
-## Leer nombre de archivos
-
-perfil.files <- list.files("./csv/", recursive = T, pattern = 'co_.+csv', full.names = T)
-
-##Leer Columnas
-
-all.files <- NULL
-for(bf in perfil.files){
-  temp <- read.csv(bf, as.is = T)
-  valid_col <- ncol(temp)-3
-  for(i in 1:valid_col)temp[ , i] <- gsub("\\s","", temp[, i])
-  df <- sub(".+/csv/", "\\1", bf)
-  df<-file_path_sans_ext(df)
-  temp$csvid <- df
-  all.files <- rbind.fill(all.files, temp)
-}
-
-table(table(all.files$perfil))
-unique(all.files$perfil)
-
-
-all.files$pair<-ifelse(nchar(all.files$csvid)==5, paste0(all.files$csvid, "rp") , all.files$csvid )
-unique(all.files$pair)
-
-all.files$pair2<-ifelse(grepl("rprp", all.files$pair), paste0("co_", all.files$moda, "rp"), all.files$pair)
-                        
-unique(all.files$pair2)
-
-
-
-all.files$perfil2<-substr(all.files$perfil, start = 1, stop = 2)
-
-unique(all.files$perfil2)
-
-table(all.files$perfil2, all.files$pair2)
-
-
-##Agrego ID Unico = Grupo + Perfil
-all.files$id<-paste0(all.files$grupo,".", all.files$perfil2,".", all.files$pair2)
-
-
-
-## Transformación de pensión en pesos (valor UF 27.161,48 01/07/2018)
-all.files$val_uf_pension_bru<-as.numeric(all.files$val_uf_pension_bru) #make numeric
-all.files$val_uf_pension_net<-as.numeric(all.files$val_uf_pension_net) #make numeric
-
-all.files$val_pesos_pension<-ifelse(is.na(all.files$val_uf_pension_net), all.files$val_uf_pension_bru*pesouf, 
-                                    all.files$val_uf_pension_net*pesouf)
-  
-all.files$val_uf_pension<-ifelse(is.na(all.files$val_uf_pension_net), all.files$val_uf_pension_bru, 
-                                    all.files$val_uf_pension_net)
-
-
-## Genero nuevo archivo con los cambios
-
-save(all.files, file = "nuevaBD.RData")
-
-#################### End merge #####################################
-
-
-
-
 load("nuevaBD.RData")
 
 all.files$VPN<-all.files$val_pesos_pension*12*20
 QID<-"QualtricsID"
 
-# Ejemplo  - Tabla cuando ID = 2
-#################################
-#data_sub <- subset(all.files, nid==2)
-tbl<-all.files[all.files$id=="Fnivel4.rp.co_1brp", c("razon_social", "val_uf_pension", "riesgo")]
-opcion <- seq.int(nrow(tbl))
-tbl<-cbind(opcion, tbl)
-
-tbl
-
-names(tbl)<-c("Opción", "Razón Social", "Valor Pensión",  "Clasificación de Riesgo")
-tbl<-xtable(tbl, caption="Leyenda del Control" )
-
-save(htmlTable(tbl, file=paste0(git, "controlTest2",".html")))
-
-print(tbl, type="HTML", file=paste0(git, "controlTest",".html"), include.rownames=F  )
 
 
   
@@ -134,7 +48,7 @@ fcn.control <- function(gender, econ, mode, pair){
     
     id<-paste0(gender, econ, ".", mode, ".", pair)
     
-    tbl<-all.files[all.files$id==id, c("razon_social", "val_uf_pension")]
+    tbl<-all.files[all.files$id==id, c("razon_social", "val_uf_pension", "VPN")]
     output <- numcolwise(prettyNum)(tbl, dec = ",")
     output$val_uf_pension<-paste(output$val_uf_pension, "UF")
     output<-cbind(tbl[,1], output[, 1])
@@ -156,7 +70,7 @@ fcn.control <- function(gender, econ, mode, pair){
   else {
     
     id<-paste0(gender, econ, ".", mode, ".", pair)
-    tbl<-all.files[all.files$id==id, c("razon_social", "val_uf_pension", "riesgo")]
+    tbl<-all.files[all.files$id==id, c("razon_social", "val_uf_pension", "riesgo", "VPN")]
     opcion <- seq.int(nrow(tbl))
     tbl<-cbind(opcion, tbl)
     output <- numcolwise(prettyNum)(tbl, dec = ",")
@@ -185,8 +99,6 @@ fcn.control <- function(gender, econ, mode, pair){
   
 }
 
-fcn.control("F", "nivel2", "rp", "co_1brp" )
-fcn.control("M", "nivel2", "1b", "co_1brp" )
 ##########################
 ### Function - Treatment 1
 ##########################
@@ -195,7 +107,7 @@ fcn.treat1 <- function(gender, econ, mode, pair){
   
   if (mode=="rp") {
     id<-paste0(gender, econ, ".", mode, ".", pair)
-    tbl<-all.files[all.files$id==id, c("razon_social", "val_pesos_pension")]
+    tbl<-all.files[all.files$id==id, c("razon_social", "val_pesos_pension", "VPN")]
     opcion <- seq.int(nrow(tbl))
     tbl<-cbind(opcion, tbl)
     tbl$val_pesos_pension<-round( tbl$val_pesos_pension, 0)
@@ -219,7 +131,7 @@ fcn.treat1 <- function(gender, econ, mode, pair){
   
   else {
     id<-paste0(gender, econ, ".", mode, ".", pair)
-    tbl<-all.files[all.files$id==id, c("razon_social", "val_pesos_pension", "riesgo")]
+    tbl<-all.files[all.files$id==id, c("razon_social", "val_pesos_pension", "riesgo", "VPN")]
     opcion <- seq.int(nrow(tbl))
     tbl<-cbind(opcion, tbl)
     tbl$val_pesos_pension<-round( tbl$val_pesos_pension, 0)
@@ -254,10 +166,6 @@ fcn.treat1 <- function(gender, econ, mode, pair){
   
 }
 
-fcn.treat1("F", "nivel2", "rp", "co_2brp" )
-fcn.treat1("M", "nivel2", "2a", "co_2arp" )
-
-
 #########################
 ### Function - Treatment 2
 ##########################
@@ -268,7 +176,7 @@ fcn.treat2 <- function(gender, econ, mode, pair){
     
     
     id<-paste0(gender, econ, ".", mode, ".", pair)
-    tbl<-all.files[all.files$id==id, c("razon_social", "val_pesos_pension")]
+    tbl<-all.files[all.files$id==id, c("razon_social", "val_pesos_pension", "VPN")]
     tbl$val_pesos_pension<-round( tbl$val_pesos_pension, 0)
     tbl$pesosDiff<- tbl$val_pesos_pension - max(tbl$val_pesos_pension)
     tbl$pesosDiff<-round( tbl$pesosDiff, 0)*12
@@ -301,7 +209,7 @@ fcn.treat2 <- function(gender, econ, mode, pair){
     
     
     id<-paste0(gender, econ, ".", mode, ".", pair)
-    tbl<-all.files[all.files$id==id, c("razon_social", "val_pesos_pension", "riesgo")]
+    tbl<-all.files[all.files$id==id, c("razon_social", "val_pesos_pension", "riesgo", "VPN")]
     tbl$val_pesos_pension<-round( tbl$val_pesos_pension, 0)
     tbl$pesosDiff<- tbl$val_pesos_pension - max(tbl$val_pesos_pension)
     tbl$pesosDiff<-round( tbl$pesosDiff, 0)*12
@@ -334,9 +242,6 @@ fcn.treat2 <- function(gender, econ, mode, pair){
   
 }
 
-
-fcn.treat2("M", "nivel4", "rp", "co_3brp" )
-fcn.treat2("F", "nivel4", "3b", "co_3brp" )
 ##########################
 ### Function - Treatment 3
 ##########################
@@ -404,9 +309,8 @@ fcn.treat3 <- function(gender, econ, mode, pair){
   }
 }
 
-
-fcn.treat3("F", "nivel4", "rp", "co_2brp" )
-fcn.treat3("F", "nivel4", "1a", "co_1arp" )
+#fcn.treat3("F", "nivel4", "rp", "co_2brp" )
+#fcn.treat3("F", "nivel4", "1a", "co_1arp" )
 
 
 
@@ -471,7 +375,7 @@ fcn.treat4 <- function(gender, econ, mode, pair){
 
 
 
-fcn.treat4("F", "nivel4", "2a", "co_2arp" )
+#fcn.treat4("F", "nivel4", "2a", "co_2arp" )
 
 ##################################
 ###### Generating treatments
@@ -509,8 +413,8 @@ mode1<- "rp"
 mode2<- "1"
 pg<-"b"
 
-mode1pg<- if (grep("rp", mode1)) mode1 else paste0(mode1,pg)
-mode2pg<- if (grep("rp", mode2)) mode2 else paste0(mode2,pg) 
+mode1pg<- if (grepl("rp", mode1)) mode1 else paste0(mode1,pg)
+mode2pg<- if (grepl("rp", mode2)) mode2 else paste0(mode2,pg) 
 
 
 pairvct<-c(mode1pg, mode2pg)
@@ -534,5 +438,41 @@ print(selected[[1]](gender, econ, pairvct[1], pair))
 print(selected[[2]](gender, econ, pairvct[2], pair))
 
 
+#### Payment lists for treatments
 
+fcn.payment <- function(gender, econ, mode, pair){
+  id<-paste0(gender, econ, ".", mode, ".", pair)
+  
+  payment<-all.files[all.files$id==id, c("razon_social" ,"VPN")]
+  
+  mn<-15-nrow(payment)
+  
+  payment[nrow(payment)+mn,] <- NA
+  
+  payment$opcion<-1:15
+  payment$VPN<-ifelse(is.na(payment$VPN), 0, payment$VPN )
+  
+  n <- 15
+  payment$pay<- ifelse(payment$VPN==0, 0, 
+                       ifelse(payment$VPN==max(payment$VPN, na.rm=T), 1500, 
+                              ifelse(payment$VPN==sort(payment$VPN,partial=n-1)[n-1], 1250,
+                                     ifelse(payment$VPN==sort(payment$VPN,partial=n-2)[n-2], 1000, 
+                                            ifelse(payment$VPN==sort(payment$VPN,partial=n-3)[n-3], 750,
+                                                   ifelse(payment$VPN==sort(payment$VPN,partial=n-4)[n-4], 500, 
+                                                          ifelse(payment$VPN==sort(payment$VPN,partial=n-5)[n-5], 250, 
+                                                                 ifelse(payment$VPN==sort(payment$VPN,partial=n-6)[n-6], 150, 0
+                                                                 ) ) ) ) ) ) ) )
+  
+  
+  
+  row.names(payment)<-payment$opcion
+  pay.list<-payment[, "pay"]
+  pay.list <- as.list(as.data.frame(t(pay.list)))
+  
+  
+  return(pay.list)
+  
+}
 
+pay.op1<-fcn.payment(gender, econ, pairvct[1], pair)
+pay.op2<-fcn.payment(gender, econ, pairvct[2], pair)
