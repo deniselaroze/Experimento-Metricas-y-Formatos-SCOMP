@@ -23,7 +23,7 @@ library(purrr)
 #setwd("C:/Users/Mauro/Desktop/SP_excel")#################################
 
 
-setwd("C:/Users/Denise Laroze P/Dropbox/CESS-Santiago/archive/Pensions - JFF/Design info/certificados SP")
+setwd("C:/Users/Profesor/Dropbox/CESS-Santiago/archive/Pensions - JFF/Design info/certificados SP")
 rm(list = ls())
 
 #Parameters
@@ -113,7 +113,7 @@ fcn.treat1 <- function(gender, econ, mode, pair){
     tbl$val_pesos_pension<-round( tbl$val_pesos_pension, 0)
     #digits(tbl) <- c(0,0,0,0,0)
     output <- numcolwise(prettyNum)(tbl, big.mark = ".",
-                                    small.mark = ",")
+                                    decimal.mark = ",")
     output<-cbind(output[,1], tbl[,2], output[, 2])
     
     return(htmlTable(output,
@@ -137,7 +137,7 @@ fcn.treat1 <- function(gender, econ, mode, pair){
     tbl$val_pesos_pension<-round( tbl$val_pesos_pension, 0)
     #digits(tbl) <- c(0,0,0,0,0)
     output <- numcolwise(prettyNum)(tbl, big.mark = ".",
-                                    small.mark = ",")
+                                    decimal.mark = ",")
     output<-cbind(output[,1], tbl[,2], output[, 2], tbl[,4])
     title<-if(grepl("1", mode)) {print("Renta Vitalicia Inmediata")
     } else if(grepl("2", mode))  {print("Retiro Programado con Renta Vitalicia Diferida de 2 a&ntilde;os")
@@ -318,7 +318,7 @@ fcn.treat3 <- function(gender, econ, mode, pair){
 ### Function - Treatment 4 
 ##########################
 
-id<-"Fnivel4.1b.co_1brp"
+#id<-"Fnivel4.1b.co_1brp"
 
 
 fcn.treat4 <- function(gender, econ, mode, pair){
@@ -382,22 +382,21 @@ fcn.treat4 <- function(gender, econ, mode, pair){
 ##################################
 
 # Manual treatment generation, for testing
-QID<-"qualtricsID"
+#QID<-"qualtricsID"
 
 
-all.files$VPN<-all.files$val_pesos_pension*12*20
 
-fcn.control("F", "nivel2", "1a", "co_1arp" )
+#fcn.control("F", "nivel2", "1a", "co_1arp" )
 
-fcn.treat1("F", "nivel2", "1a", "co_1arp" )
+#fcn.treat1("F", "nivel2", "1a", "co_1arp" )
 
-fcn.treat2("F", "nivel2", "1a", "co_1arp" )
+#fcn.treat2("F", "nivel2", "1a", "co_1arp" )
 
-fcn.treat3("F", "nivel2", "rp", "co_1arp" )
+#fcn.treat3("F", "nivel2", "rp", "co_1arp" )
 
-fcn.treat4("M", "nivel4", "2a", "co_2a3a" )
+#fcn.treat4("M", "nivel4", "2a", "co_2a3a" )
 
-fcn.treat4("F", "nivel1", "3a", "co_3a3b" )
+#fcn.treat4("F", "nivel1", "3a", "co_3a3b" )
 
 
 #########################
@@ -406,11 +405,25 @@ fcn.treat4("F", "nivel1", "3a", "co_3a3b" )
 
 
 # Simulation data that would come from Qualtrics
+mode1Q<-"Renta Vitalicia Inmediate simple"
+mode2Q<-"Retiro Programado con Renta Vitalicia Diferida de 3 años"
+
+
+mode1<-if(mode1Q=="Retiro Programado") {"rp"
+  } else if(mode1Q=="Renta Vitalicia Inmediate simple")  {  
+    "1"
+    } else if(mode1Q=="Retiro Programado con Renta Vitalicia Diferida de 2 años")  {  
+  "2"} else {"3"}
+
+mode2<-if(mode2Q=="Retiro Programado") {"rp"
+} else if(mode2Q=="Renta Vitalicia Inmediate simple")  {  
+  "1"
+} else if(mode2Q=="Retiro Programado con Renta Vitalicia Diferida de 2 años")  {  
+  "2"} else {"3"}
 
 gender<-"F"
 econ<-"nivel1"
-mode1<- "rp"
-mode2<- "1"
+
 pg<-"b"
 
 mode1pg<- if (grepl("rp", mode1)) mode1 else paste0(mode1,pg)
@@ -426,6 +439,7 @@ pairvct
 pair<-paste0("co_", pairvct[1], pairvct[2])
 
 QID<-"qualtricsID" # to be replaced by a real Qualtrics ID code, unique to each participant
+all.files$VPN<-all.files$val_pesos_pension*12*20
 
 
 vf<-c( fcn.control,  fcn.treat1,  fcn.treat2,  fcn.treat3,   fcn.treat4)
