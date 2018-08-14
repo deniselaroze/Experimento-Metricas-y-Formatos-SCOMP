@@ -5,6 +5,29 @@
 
 
 
+#############################
+### Tests Block Randomization
+#############################
+
+#https://cran.r-project.org/web/packages/blockrand/blockrand.pdf
+
+block.id<-c("Fnivel1", "Fnivel2", "Fnivel3", "Fnivel4",
+             "Mnivel1", "Mnivel2", "Mnivel3", "Mnivel4")
+
+blockrand(200, num.levels = 5, levels = c("control", "treat1", "treat2", "treat3", "treat4"),
+          block.id)
+
+
+
+
+
+
+
+
+
+
+
+
 
 id<-"Fnivel4.rp.co_2arp"
 mode<-"rp"
