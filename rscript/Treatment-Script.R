@@ -23,18 +23,18 @@ library(purrr)
 #setwd("C:/Users/Mauro/Desktop/SP_excel")#################################
 
 
-setwd("C:/Users/Profesor/Dropbox/CESS-Santiago/archive/Pensions - JFF/Design info/certificados SP")
-rm(list = ls())
+#setwd("C:/Users/Profesor/Dropbox/CESS-Santiago/archive/Pensions - JFF/Design info/certificados SP")
+
 
 #Parameters
-pesouf<-27205.11 ### 3 de agosto de 2018
-git<-"C:/Users/Denise Laroze P/Documents/GitHub/Experimento-Metricas-y-Formatos-SCOMP/Tratamientos/"
-git<-"~/GitHub/Experimento-Metricas-y-Formatos-SCOMP/Tratamientos/"
+#pesouf<-27205.11 ### 3 de agosto de 2018
+#path<-"C:/Users/Denise Laroze P/Documents/GitHub/Experimento-Metricas-y-Formatos-SCOMP/Tratamientos/"
+path<-"~/GitHub/Experimento-Metricas-y-Formatos-SCOMP/Tratamientos/"
 
-load("nuevaBD.RData")
+load("C:/Users/Profesor/Dropbox/CESS-Santiago/archive/Pensions - JFF/Design info/certificados SP/nuevaBD.RData")
 
-all.files$VPN<-all.files$val_pesos_pension*12*20
-QID<-"QualtricsID"
+#all.files$VPN<-all.files$val_pesos_pension*12*20
+#QID<-"QualtricsID"
 
 
 
@@ -59,7 +59,7 @@ fcn.control <- function(gender, econ, mode, pair){
                 n.cgroup = c(nrow(tbl)),
                 header=paste("Opci&oacuten", 1:nrow(tbl)),
                 caption="Retiro Programado",
-                file=paste0(git, "control", QID ,".html"), 
+                file=paste0(path, "control", QID ,".html"), 
                 css.cell = "padding-left: 0.5em; padding-right: 0.5em;",rnames=F
       )
     )
@@ -90,7 +90,7 @@ fcn.control <- function(gender, econ, mode, pair){
                    Rentas Vitalicias, ordenadas de mejor a inferior clasificaci&oacuten, son las siguientes AAA 
                    (mejor clasificaci&oacuten), AA, A, BBB (inferior). Cada una de estas categor&iacuteas puede tener 
                    sub&iacutendices &quot;+&quot; o &quot;-&quot;, siendo el sub&iacutendice &quot;+&quot; mejor que el &quot;-&quot;.",
-                     file=paste0(git, "control", QID ,".html"),
+                     file=paste0(path, "control", QID ,".html"),
                      css.cell = "padding-left: 2em; padding-right: 2em;",
                      rnames=F
     )
@@ -111,7 +111,7 @@ fcn.treat1 <- function(gender, econ, mode, pair){
     opcion <- seq.int(nrow(tbl))
     tbl<-cbind(opcion, tbl)
     tbl$val_pesos_pension<-round( tbl$val_pesos_pension, 0)
-    #digits(tbl) <- c(0,0,0,0,0)
+    #dipaths(tbl) <- c(0,0,0,0,0)
     output <- numcolwise(prettyNum)(tbl, big.mark = ".",
                                     decimal.mark = ",")
     output<-cbind(output[,1], tbl[,2], output[, 2])
@@ -120,7 +120,7 @@ fcn.treat1 <- function(gender, econ, mode, pair){
                      header =  c("Opci&oacuten", "Raz&oacuten Social", "Monto de pension mensual<br> durante el primer a&ntildeo&dagger;"),
                      caption=  "Retiro Programado ",
                      tfoot="&dagger; Valor de UF en pesos al d&iacutea 03/08/2018",
-                     file=paste0(git, "Treat1", QID ,".html"), rnames=F
+                     file=paste0(path, "Treat1", QID ,".html"), rnames=F
     )   
     )
     
@@ -153,7 +153,7 @@ fcn.treat1 <- function(gender, econ, mode, pair){
                      Rentas Vitalicias, ordenadas de mejor a inferior clasificaci&oacuten, son las siguientes AAA 
                      (mejor clasificaci&oacuten), AA, A, BBB (inferior). Cada una de estas categor&iacuteas puede tener 
                      sub&iacutendices &quot;+&quot; o &quot;-&quot;, siendo el sub&iacutendice &quot;+&quot; mejor que el &quot;-&quot;.",
-                     file=paste0(git, "Treat1", QID ,".html"), rnames=F
+                     file=paste0(path, "Treat1", QID ,".html"), rnames=F
                      )   
     )
     
@@ -194,7 +194,7 @@ fcn.treat2 <- function(gender, econ, mode, pair){
                      caption="Retiro Programado",
                      tfoot="&dagger; Valor de UF en pesos al d&iacutea 03/08/2018;
                      &lowast; Monto que dejar&iacutea de ganar cada a&ntilde;o de vida",
-                     file=paste0(git, "Treat2", QID ,".html"), 
+                     file=paste0(path, "Treat2", QID ,".html"), 
                      rnames=F
                      )
     )   
@@ -234,7 +234,7 @@ fcn.treat2 <- function(gender, econ, mode, pair){
                      clasificaci&oacuten, son las siguientes AAA (mejor clasificaci&oacuten), AA, A, BBB (inferior). Cada una de estas categor&iacuteas puede tener 
                      sub&iacutendices &quot;+&quot; o &quot;-&quot;, siendo el sub&iacutendice &quot;+&quot; mejor que el &quot;-&quot;.
                      &lowast;&lowast; Monto que dejar&iacutea de ganar cada a&ntilde;o de vida",
-                     file=paste0(git, "Treat2", QID ,".html"), 
+                     file=paste0(path, "Treat2", QID ,".html"), 
                      css.cell = "padding-left: 0.5em; padding-right: 0.5em;",rnames=F
     )
     )   
@@ -270,7 +270,7 @@ fcn.treat3 <- function(gender, econ, mode, pair){
                      &lowast; Estimaci&oacuten del valor total de la oferta de pensi&oacuten, asumiendo una esperanza de vida promedio y 
                      descontando el costo de los per&iacuteodos garantizados; 
                      &lowast;&lowast; Estimaci&oacuten del dinero que dejar&iacutea de ganar sobre el transcurso de una vida promedio.",
-                     file=paste0(git, "Treat3", QID ,".html"), rnames=F
+                     file=paste0(path, "Treat3", QID ,".html"), rnames=F
     )
     )   
     
@@ -303,7 +303,7 @@ fcn.treat3 <- function(gender, econ, mode, pair){
                     &lowast; Estimaci&oacuten del valor total de la oferta de pensi&oacuten, asumiendo una esperanza de vida promedio y descontando
                    el costo de los per&iacuteodos garantizados; 
                    &lowast;&lowast; Estimaci&oacuten del dinero que dejar&iacutea de ganar sobre el transcurso de una vida promedio.",
-                     file=paste0(git, "Treat3", QID ,".html"), rnames=F
+                     file=paste0(path, "Treat3", QID ,".html"), rnames=F
     )
     )   
   }
@@ -369,7 +369,7 @@ fcn.treat4 <- function(gender, econ, mode, pair){
     geom_text(aes(label = paste("Opción", tbl$opcion, ":") ), size=5 , angle=90, vjust = 0.4, hjust= 1) +
     coord_cartesian(ylim=c(min,max))  #coord_flip() +
   
-  return(ggsave(paste0(git, "Treat4RP", QID ,".png"), width=25, height = 30, units = "cm")) 
+  return(ggsave(paste0(path, "Treat4RP", QID ,".png"), width=25, height = 30, units = "cm")) 
   
 }
 
@@ -405,26 +405,26 @@ fcn.treat4 <- function(gender, econ, mode, pair){
 
 
 # Simulation data that would come from Qualtrics
-mode1Q<-"Renta Vitalicia Inmediate simple"
-mode2Q<-"Retiro Programado con Renta Vitalicia Diferida de 3 años"
+#mode1Q<-"Renta Vitalicia Inmediate simple"
+#mode2Q<-"Retiro Programado con Renta Vitalicia Diferida de 3 años"
 
 
 mode1<-if(mode1Q=="Retiro Programado") {"rp"
-  } else if(mode1Q=="Renta Vitalicia Inmediate simple")  {  
+  } else if(mode1Q=="Renta Vitalicia Inmediata simple")  {  
     "1"
     } else if(mode1Q=="Retiro Programado con Renta Vitalicia Diferida de 2 años")  {  
   "2"} else {"3"}
 
 mode2<-if(mode2Q=="Retiro Programado") {"rp"
-} else if(mode2Q=="Renta Vitalicia Inmediate simple")  {  
+} else if(mode2Q=="Renta Vitalicia Inmediata simple")  {  
   "1"
 } else if(mode2Q=="Retiro Programado con Renta Vitalicia Diferida de 2 años")  {  
   "2"} else {"3"}
 
-gender<-"F"
-econ<-"nivel1"
+#gender<-"F"
+#econ<-"nivel1"
 
-pg<-"b"
+#pg<-"b"
 
 mode1pg<- if (grepl("rp", mode1)) mode1 else paste0(mode1,pg)
 mode2pg<- if (grepl("rp", mode2)) mode2 else paste0(mode2,pg) 
