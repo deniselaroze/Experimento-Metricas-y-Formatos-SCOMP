@@ -18,16 +18,55 @@ blockrand(200, num.levels = 5, levels = c("control", "treat1", "treat2", "treat3
           block.id)
 
 
+##### Alternative package --- Not convinced. 
+library(randomizr)
+
+
+blocks <- rep(c("Fnivel1", "Fnivel2", "Fnivel3", "Fnivel4",
+                "Mnivel1", "Mnivel2", "Mnivel3", "Mnivel4"), times = 150)
+
+Z <- block_ra(blocks = blocks, num_arms = 5)
+table(blocks, Z)
+
+x<- block_ra(blocks = blocks, num_arms = 5)
+
+
+table(x, Z)
 
 
 
+#### Tests for simple randomization
+blocks <- rep(c("Fnivel1", "Fnivel2", "Fnivel3", "Fnivel4",
+                "Mnivel1", "Mnivel2", "Mnivel3", "Mnivel4"), times = 150)
+
+treat1 <- rep(NA, times = 1200)
+treat2 <- rep(NA, times = 1200)
 
 
+tmp<-as.data.frame(cbind(blocks, treat1, treat2))
 
 
+vf<-c( "fcn.control",  "fcn.treat1",  "fcn.treat2",  "fcn.treat3",   "fcn.treat4")
+
+#### Random treatment assignment
+
+selected<-matrix(NA, nrow = 1200, ncol = 2)
+
+for (i in 1:nrow(tmp)){
+  option<-sample(vf, 2, replace=FALSE)
+selected[i, 1]<-option[1]
+selected[i, 2]<-option[2]
+ 
+
+}
 
 
+tmp$treat1<-selected[, 1]
+tmp$treat2<-selected[, 2]
 
+table(tmp$blocks, tmp$treat1, tmp$treat2)
+table(tmp$blocks, tmp$treat1)
+table(tmp$blocks, tmp$treat2)
 
 id<-"Fnivel4.rp.co_2arp"
 mode<-"rp"
