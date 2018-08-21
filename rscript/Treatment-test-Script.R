@@ -1,6 +1,100 @@
 
 
 
+#### Return treatment names to Qualtrics
+
+vf<-c( fcn.control,  fcn.treat1,  fcn.treat2,  fcn.treat3,   fcn.treat4)
+
+namedVF<-list(control=fcn.control, treat1=fcn.treat1, treat2=fcn.treat2, treat3=fcn.treat3, treat4=fcn.treat4  )
+
+selected<-sample(namedVF, 2, replace=FALSE)
+selectedQID<-names(selected)
+
+print(selected[[1]](gender, econ, pairvct[1], pair, v=1))
+print(selected[[2]](gender, econ, pairvct[2], pair, v=2))
+
+
+
+
+
+###############################################
+#### Changes in variante name of the treatments
+###############################################
+
+
+fcn.control <- function(gender, econ, mode, pair, v){
+  
+  if (mode=="rp") {
+    
+    id<-paste0(gender, econ, ".", mode, ".", pair)
+    
+    tbl<-all.files[all.files$id==id, c("razon_social", "val_uf_pension", "VPN")]
+    output <- numcolwise(prettyNum)(tbl, dec = ",")
+    output$val_uf_pension<-paste(output$val_uf_pension, "UF")
+    output<-cbind(tbl[,1], output[, 1])
+    op<-t(output)
+    
+    return(
+      htmlTable(op, cgroup = c("Monto de pension mensual durante el primer a&ntildeo"),
+                n.cgroup = c(nrow(tbl)),
+                header=paste("Opci&oacuten", 1:nrow(tbl)),
+                caption="Retiro Programado",
+                file=paste0(path, "TreatV", v , QID ,".html"), 
+                css.cell = "padding-left: 0.5em; padding-right: 0.5em;",rnames=F
+      )
+    )
+    
+    
+  }
+  
+  else {
+    
+    id<-paste0(gender, econ, ".", mode, ".", pair)
+    tbl<-all.files[all.files$id==id, c("razon_social", "val_uf_pension", "riesgo", "VPN")]
+    opcion <- seq.int(nrow(tbl))
+    tbl<-cbind(opcion, tbl)
+    output <- numcolwise(prettyNum)(tbl, dec = ",")
+    output<-cbind(output[,1], tbl[,2], output[, 2], tbl[,4])
+    
+    title<-if(grepl("1", mode)) {print("Renta Vitalicia Inmediata")
+    } else if(grepl("2", mode))  {print("Retiro Programado con Renta Vitalicia Diferida de 2 a&ntilde;os")
+    } else {print("Retiro Programado con Renta Vitalicia Diferida de 4 a&ntilde;os")}
+    
+    
+    return(htmlTable(output,
+                     header =  c("Opci&oacuten", "Raz&oacuten Social", "Pensi&oacuten mensual  en UF 
+                                 <br> sin retiro de excedentes", "Clasificaci&oacuten de Riesgo <br>
+                               &nbsp; de la Compa&ntilde;&iacutea de Seguros&lowast;"),
+                     caption=title,
+                     tfoot="&lowast; Las categor&iacuteas de Clasificaci&oacuten de Riesgo que permiten a las Compa&ntilde;&iacutea ofrecer
+                   Rentas Vitalicias, ordenadas de mejor a inferior clasificaci&oacuten, son las siguientes AAA 
+                   (mejor clasificaci&oacuten), AA, A, BBB (inferior). Cada una de estas categor&iacuteas puede tener 
+                   sub&iacutendices &quot;+&quot; o &quot;-&quot;, siendo el sub&iacutendice &quot;+&quot; mejor que el &quot;-&quot;.",
+                     file=paste0(path, "TreatV", v ,QID ,".html"),
+                     css.cell = "padding-left: 2em; padding-right: 2em;",
+                     rnames=F
+    )
+    )
+  }
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
