@@ -409,11 +409,11 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
 
 
 # Simulation data that would come from Qualtrics
-mode1Q<-1
-mode2Q<-3
-gender<-"F"
-econ<-"nivel1"
-pg<-"b"
+#mode1Q<-1
+#mode2Q<-3
+#gender<-"F"
+#econ<-"nivel1"
+#pg<-"b"
 
 
 
