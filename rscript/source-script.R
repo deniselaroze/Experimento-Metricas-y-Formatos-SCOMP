@@ -13,5 +13,3 @@ mode2Q<-args[4] ## segunda selección modalidad
 pg<-args[5]
 
 source("Treatment-Script.R")
-
-
