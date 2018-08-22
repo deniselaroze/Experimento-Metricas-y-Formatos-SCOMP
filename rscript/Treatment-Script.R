@@ -342,12 +342,12 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
   point <- format_format(big.mark = ".", decimal.mark = ",", scientific = FALSE)
   
   title<-if(grepl("1", mode)) {print("Renta Vitalicia Inmediata")
-  } else if(grepl("2", mode))  {print("Retiro Programado con Renta Vitalicia Diferida de 2 a駉s")
-  } else if(grepl("3", mode)) {print("Retiro Programado con Renta Vitalicia Diferida de 4 a駉s")
+  } else if(grepl("2", mode))  {print("Retiro Programado con Renta Vitalicia Diferida de 2 a帽os")
+  } else if(grepl("3", mode)) {print("Retiro Programado con Renta Vitalicia Diferida de 4 a帽os")
   } else {print("Retiro Programado")
   }
   
-  y_labels <- purrr::map2(title, paste0("Total Valor Econ髆ico Pensi髇"), 
+  y_labels <- purrr::map2(title, paste0("Total Valor Econ贸mico Pensi贸n"), 
                           ~ bquote(atop(.(.x), scriptstyle(.(.y))))
   )
   y_labels <- purrr::invoke(expression, y_labels)
@@ -361,7 +361,7 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
     theme(legend.position="") +
     scale_y_continuous(labels=function(x) format(x, big.mark = ".",decimal.mark=",",
                                                  scientific = FALSE)#,
-                       #                    sec.axis = sec_axis(~./240, name = "Pensi髇 Mensual (pesos)", labels=function(x) format(x, big.mark = ".", decimal.mark = ",", scientific = FALSE))
+                       #                    sec.axis = sec_axis(~./240, name = "Pensi贸n Mensual (pesos)", labels=function(x) format(x, big.mark = ".", decimal.mark = ",", scientific = FALSE))
     )+
     ylab(y_labels)  + xlab("")  +
     theme(axis.text.y=element_text(size=15 , angle=90),
@@ -370,7 +370,7 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
           panel.grid.major.x = element_blank(),
           panel.grid.major.y = element_line(colour = "Grey60", linetype = "dashed"))+
     geom_text(aes(label = paste0("$",point(val_pesos_pension)) , angle=90, size = 6, vjust = 0.4, hjust= -0.1)) +
-    geom_text(aes(label = paste("Opci髇", tbl$opcion, ":") ), size=5 , angle=90, vjust = 0.4, hjust= 1) +
+    geom_text(aes(label = paste("Opci贸n", tbl$opcion, ":") ), size=5 , angle=90, vjust = 0.4, hjust= 1) +
     coord_cartesian(ylim=c(min,max))  #coord_flip() +
   
   return(ggsave(paste0(path, "TreatV", v, QID ,".png"), width=25, height = 30, units = "cm")) 
@@ -496,3 +496,5 @@ fcn.payment <- function(gender, econ, mode, pair){
 
 pay.op1<-fcn.payment(gender, econ, pairvct[1], pair)
 pay.op2<-fcn.payment(gender, econ, pairvct[2], pair)
+
+cat("\014") ## clear console
