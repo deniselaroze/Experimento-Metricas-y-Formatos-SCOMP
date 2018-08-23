@@ -63,9 +63,9 @@ fcn.control <- function(gender, econ, mode, pair, v){
     output <- numcolwise(prettyNum)(tbl, dec = ",")
     output<-cbind(output[,1], tbl[,2], output[, 2], tbl[,4])
     
-    title<-if(grepl("1", mode)) {print("Renta Vitalicia Inmediata")
-    } else if(grepl("2", mode))  {print("Retiro Programado con Renta Vitalicia Diferida de 2 a&ntilde;os")
-    } else {print("Retiro Programado con Renta Vitalicia Diferida de 4 a&ntilde;os")}
+    title<-if(grepl("1", mode)) {"Renta Vitalicia Inmediata"
+    } else if(grepl("2", mode))  {"Retiro Programado con Renta Vitalicia Diferida de 2 a&ntilde;os"
+    } else {"Retiro Programado con Renta Vitalicia Diferida de 4 a&ntilde;os"}
     
     
     return(htmlTable(output,
@@ -122,9 +122,9 @@ fcn.treat1 <- function(gender, econ, mode, pair, v){
     output <- numcolwise(prettyNum)(tbl, big.mark = ".",
                                     decimal.mark = ",")
     output<-cbind(output[,1], tbl[,2], output[, 2], tbl[,4])
-    title<-if(grepl("1", mode)) {print("Renta Vitalicia Inmediata")
-    } else if(grepl("2", mode))  {print("Retiro Programado con Renta Vitalicia Diferida de 2 a&ntilde;os")
-    } else {print("Retiro Programado con Renta Vitalicia Diferida de 4 a&ntilde;os")}
+    title<-if(grepl("1", mode)) {"Renta Vitalicia Inmediata"
+    } else if(grepl("2", mode))  {"Retiro Programado con Renta Vitalicia Diferida de 2 a&ntilde;os"
+    } else {"Retiro Programado con Renta Vitalicia Diferida de 4 a&ntilde;os"}
     
     return(htmlTable(output,
                      header =  c("Opci&oacuten", "Raz&oacuten Social", "Pensi&oacuten mensual en pesos 
@@ -189,9 +189,9 @@ fcn.treat2 <- function(gender, econ, mode, pair, v){
                                     decimal.mark = ",")
     output<-cbind(output[,1], tbl[,2], output[, c(2,3)], tbl[,4])
     
-    title<-if(grepl("1", mode)) {print("Renta Vitalicia Inmediata")
-    } else if(grepl("2", mode))  {print("Retiro Programado con Renta Vitalicia Diferida de 2 a&ntilde;os")
-    } else {print("Retiro Programado con Renta Vitalicia Diferida de 4 a&ntilde;os")}
+    title<-if(grepl("1", mode)) {"Renta Vitalicia Inmediata"
+    } else if(grepl("2", mode))  {"Retiro Programado con Renta Vitalicia Diferida de 2 a&ntilde;os"
+    } else {"Retiro Programado con Renta Vitalicia Diferida de 4 a&ntilde;os"}
     
     return(htmlTable(output,
                      header =  c("Opci&oacuten", "Raz&oacuten Social", "Pensi&oacuten mensual en  pesos 
@@ -257,9 +257,9 @@ fcn.treat3 <- function(gender, econ, mode, pair, v){
                                     decimal.mark = ",")
     output<-cbind(output[,1], tbl[,2], output[, c(2,3,4)])
     
-    title<-if(grepl("1", mode)) {print("Renta Vitalicia Inmediata")
-    } else if(grepl("2", mode))  {print("Retiro Programado con Renta Vitalicia Diferida de 2 a&ntilde;os")
-    } else {print("Retiro Programado con Renta Vitalicia Diferida de 4 a&ntilde;os")}
+    title<-if(grepl("1", mode)) {"Renta Vitalicia Inmediata"
+    } else if(grepl("2", mode))  {"Retiro Programado con Renta Vitalicia Diferida de 2 a&ntilde;os"
+    } else {"Retiro Programado con Renta Vitalicia Diferida de 4 a&ntilde;os"}
     
     
     
@@ -301,10 +301,10 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
   min<-min(tbl$VPN, na.rm=T)-1500000 
   point <- format_format(big.mark = ".", decimal.mark = ",", scientific = FALSE)
   
-  title<-if(grepl("1", mode)) {print("Renta Vitalicia Inmediata")
-  } else if(grepl("2", mode))  {print("Retiro Programado con Renta Vitalicia Diferida de 2 aÃ±os")
-  } else if(grepl("3", mode)) {print("Retiro Programado con Renta Vitalicia Diferida de 4 aÃ±os")
-  } else {print("Retiro Programado")
+  title<-if(grepl("1", mode)) {"Renta Vitalicia Inmediata"
+  } else if(grepl("2", mode))  {"Retiro Programado con Renta Vitalicia Diferida de 2 aÃ±os"
+  } else if(grepl("3", mode)) {"Retiro Programado con Renta Vitalicia Diferida de 4 aÃ±os"
+  } else {"Retiro Programado"
   }
   
   y_labels <- purrr::map2(title, paste0("Total Valor EconÃ³mico PensiÃ³n"), 
@@ -389,9 +389,9 @@ mode2pg<- if (grepl("rp", mode2)) mode2 else paste0(mode2,pg)
 
 
 pairvct<-c(mode1pg, mode2pg)
-pairvct
+#pairvct
 pairvct<-sort(pairvct)
-pairvct
+#pairvct
 
 pair<-paste0("co_", pairvct[1], pairvct[2])
 
@@ -406,8 +406,8 @@ selected<-sample(namedVF, 2, replace=FALSE)
 selectedQID<-names(selected) ## list of selected treatments to send to Qualtrics
 
 ### executing treatments
-print(selected[[1]](gender, econ, pairvct[1], pair, v=1))
-print(selected[[2]](gender, econ, pairvct[2], pair, v=2))
+selected[[1]](gender, econ, pairvct[1], pair, v=1)
+selected[[2]](gender, econ, pairvct[2], pair, v=2)
 
 #### Payment lists for treatments
 
