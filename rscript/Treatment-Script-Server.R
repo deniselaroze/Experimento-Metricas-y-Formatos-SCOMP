@@ -5,8 +5,26 @@
 ### Denise Laroze / Mlopez
 ################################################
 
+args <- commandArgs(TRUE)
+
 #No incluir el llamado a librerias individuales, sino la carpeta donde están instaladas
-.libPaths=("/home/cess/R/x86_64-koji-linux-gnu-library/3.4")
+.libPaths=("/usr/lib64/R/library/")
+
+require(plyr)
+require(ggplot2)
+theme_set(theme_bw())
+require(scales)
+require(gridExtra)
+require(xtable)
+require(RColorBrewer)
+require(htmlTable)
+#library(gridBase)
+require(grid)
+require(forcats)
+require(pacman)
+pacman::p_load(ggplot2, extrafont, scales)
+require(purrr, warn.conflicts = FALSE, quietly = TRUE)
+
 
 #Amazon Server
 setwd("/var/www/r.cess.cl/public_html/")
@@ -17,17 +35,12 @@ path<-"/var/www/r.cess.cl/public_html/sp/"
 
 load("/var/www/r.cess.cl/public_html/sp/nuevaBD.RData")
 
-args <- commandArgs(TRUE)
 
-if(length(args) != 5){
-  stop()
-}
 
-gender<-args[1]   ## Género
-econ<-args[2]    ## SES
-mode1Q<-args[3] ## primera selección modalidad
-mode2Q<-args[4] ## segunda selección modalidad
-pg<-args[5]
+#if(length(args) != 5){
+#  stop()
+#}
+
 
 ###########################
 ## Function - Control
@@ -60,6 +73,7 @@ fcn.control <- function(gender, econ, mode, pair, v){
     tbl<-all.files[all.files$id==id, c("razon_social", "val_uf_pension", "riesgo", "VPN")]
     opcion <- seq.int(nrow(tbl))
     tbl<-cbind(opcion, tbl)
+    
     output <- numcolwise(prettyNum)(tbl, dec = ",")
     output<-cbind(output[,1], tbl[,2], output[, 2], tbl[,4])
     
@@ -98,6 +112,7 @@ fcn.treat1 <- function(gender, econ, mode, pair, v){
     tbl<-cbind(opcion, tbl)
     tbl$val_pesos_pension<-round( tbl$val_pesos_pension, 0)
     #dipaths(tbl) <- c(0,0,0,0,0)
+
     output <- numcolwise(prettyNum)(tbl, big.mark = ".",
                                     decimal.mark = ",")
     output<-cbind(output[,1], tbl[,2], output[, 2])
@@ -119,13 +134,14 @@ fcn.treat1 <- function(gender, econ, mode, pair, v){
     tbl<-cbind(opcion, tbl)
     tbl$val_pesos_pension<-round( tbl$val_pesos_pension, 0)
     #digits(tbl) <- c(0,0,0,0,0)
+    
     output <- numcolwise(prettyNum)(tbl, big.mark = ".",
                                     decimal.mark = ",")
     output<-cbind(output[,1], tbl[,2], output[, 2], tbl[,4])
     title<-if(grepl("1", mode)) {"Renta Vitalicia Inmediata"
     } else if(grepl("2", mode))  {"Retiro Programado con Renta Vitalicia Diferida de 2 a&ntilde;os"
     } else {"Retiro Programado con Renta Vitalicia Diferida de 4 a&ntilde;os"}
-    
+
     return(htmlTable(output,
                      header =  c("Opci&oacuten", "Raz&oacuten Social", "Pensi&oacuten mensual en pesos 
                                  <br> sin retiro de excedentes&dagger;", "&nbsp; Clasificaci&oacuten de Riesgo <br>
@@ -159,7 +175,7 @@ fcn.treat2 <- function(gender, econ, mode, pair, v){
     tbl$pesosDiff<-round( tbl$pesosDiff, 0)*12
     opcion <- seq.int(nrow(tbl))
     tbl<-cbind(opcion, tbl)
-    
+
     output <- numcolwise(prettyNum)(tbl, big.mark = ".",
                                     decimal.mark = ",")
     output<-cbind(output[,1], tbl[,2], output[, c(2,3)])
@@ -184,7 +200,7 @@ fcn.treat2 <- function(gender, econ, mode, pair, v){
     tbl$pesosDiff<-round( tbl$pesosDiff, 0)*12
     opcion <- seq.int(nrow(tbl))
     tbl<-cbind(opcion, tbl)
-    
+
     output <- numcolwise(prettyNum)(tbl, big.mark = ".",
                                     decimal.mark = ",")
     output<-cbind(output[,1], tbl[,2], output[, c(2,3)], tbl[,4])
@@ -224,7 +240,7 @@ fcn.treat3 <- function(gender, econ, mode, pair, v){
     tbl$VPNDiff<-round( tbl$VPNDiff, 0)
     opcion <- seq.int(nrow(tbl))
     tbl<-cbind(opcion, tbl)
-    
+
     output <- numcolwise(prettyNum)(tbl, big.mark = ".",
                                     decimal.mark = ",")
     output<-cbind(output[,1], tbl[,2], output[, c(2,3,4)])
@@ -252,7 +268,7 @@ fcn.treat3 <- function(gender, econ, mode, pair, v){
     tbl$VPNDiff<-round( tbl$VPNDiff, 0)
     opcion <- seq.int(nrow(tbl))
     tbl<-cbind(opcion, tbl)
-    
+
     output <- numcolwise(prettyNum)(tbl, big.mark = ".",
                                     decimal.mark = ",")
     output<-cbind(output[,1], tbl[,2], output[, c(2,3,4)])
@@ -292,7 +308,7 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
   tbl$val_pesos_pension<-round( tbl$val_pesos_pension, 0)
   opcion <- seq.int(nrow(tbl))
   tbl<-cbind(opcion, tbl)
-  
+
   n<-nrow(tbl)
   
   
@@ -365,27 +381,35 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
 
 
 # Simulation data that would come from Qualtrics
-#mode1Q<-1
-#mode2Q<-3
-#gender<-"F"
-#econ<-"nivel1"
-#pg<-"b"
+# mode1Q<-"1"
+# mode2Q<-"3"
+# gender<-"F"
+# econ<-"nivel1"
+# pg<-"b"
+
+gender<-args[1]   ## Género
+econ<-args[2]    ## SES
+mode1Q<-args[3] ## primera selección modalidad
+mode2Q<-args[4] ## segunda selección modalidad
+pg<-args[5]
+
 
 ### Adaptation from Qualtrics to R
-mode1<-if(mode1Q==1) {"rp"
-} else if(mode1Q==2)  {  
+mode1<-if(mode1Q=="1") {"rp"
+} else if(mode1Q=="2")  {  
   "1"
-} else if(mode1Q==3)  {  
+} else if(mode1Q=="3")  {  
   "2"} else {"3"}
 
-mode2<-if(mode2Q==1) {"rp"
-} else if(mode2Q==2)  {  
+mode2<-if(mode2Q=="1") {"rp"
+} else if(mode2Q=="2")  {  
   "1"
-} else if(mode2Q==3)  {  
+} else if(mode2Q =="3")  {  
   "2"} else {"3"}
 
 mode1pg<- if (grepl("rp", mode1)) mode1 else paste0(mode1,pg)
 mode2pg<- if (grepl("rp", mode2)) mode2 else paste0(mode2,pg) 
+
 
 
 pairvct<-c(mode1pg, mode2pg)
@@ -400,14 +424,17 @@ all.files$VPN<-all.files$val_pesos_pension*12*20
 
 #### list of treatment functions
 namedVF<-list(control=fcn.control, treat1=fcn.treat1, treat2=fcn.treat2, treat3=fcn.treat3, treat4=fcn.treat4  )
+#namedVF<-list(control=fcn.control, control=fcn.control, control=fcn.control, control=fcn.control, control=fcn.control )
 
 #### Random selection of treatment without replacement
 selected<-sample(namedVF, 2, replace=FALSE)
 selectedQID<-names(selected) ## list of selected treatments to send to Qualtrics
 
+
 ### executing treatments
 selected[[1]](gender, econ, pairvct[1], pair, v=1)
 selected[[2]](gender, econ, pairvct[2], pair, v=2)
+
 
 #### Payment lists for treatments
 
@@ -438,13 +465,14 @@ fcn.payment <- function(gender, econ, mode, pair){
   row.names(payment)<-payment$opcion
   pay.list<-payment[, "pay"]
   pay.list <- as.list(as.data.frame(t(pay.list)))
- 
+  
   return(pay.list)
 }
 
 pay.op1<-fcn.payment(gender, econ, pairvct[1], pair)
 pay.op2<-fcn.payment(gender, econ, pairvct[2], pair)
 
+
 #envio de datos a qualtrics
-to_qualtrics<-c(pay.op1, pay.op2, selectedQID)
-cat(sprintf("End of R code, this is the output: %s",to_qualtrics[], "\n"))
+to_qs<-c(pay.op1, pay.op2, selectedQID)
+cat(sprintf("End of R code, this is the output: %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", to_qs[1], to_qs[2], to_qs[3], to_qs[4], to_qs[5], to_qs[6], to_qs[7], to_qs[8], to_qs[9], to_qs[10], to_qs[11],to_qs[12], to_qs[13], to_qs[14], to_qs[15], to_qs[16], to_qs[17], to_qs[18], to_qs[19], to_qs[20], to_qs[21],to_qs[22], to_qs[23], to_qs[24], to_qs[25], to_qs[26], to_qs[27], to_qs[28], to_qs[29], to_qs[30], to_qs[31], to_qs[32]))
