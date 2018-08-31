@@ -24,7 +24,7 @@ require(forcats)
 require(pacman)
 pacman::p_load(ggplot2, extrafont, scales)
 require(purrr, warn.conflicts = FALSE, quietly = TRUE)
-
+require(magick)
 
 #Amazon Server
 setwd("/var/www/r.cess.cl/public_html/")
@@ -321,7 +321,6 @@ fcn.treat3 <- function(gender, econ, mode, pair, v){
 
 #id<-"Fnivel4.1b.co_1brp"
 
-
 fcn.treat4 <- function(gender, econ, mode, pair, v){
   id<-paste0(gender, econ, ".", mode, ".", pair)
   
@@ -370,9 +369,16 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
     geom_text(aes(label = paste("Opción", tbl$opcion, ":") ), size=5 , angle=90, vjust = 0.4, hjust= 1) +
     coord_cartesian(ylim=c(min,max))  #coord_flip() +
   
-  return(ggsave(paste0(path, "TreatV", v, QID ,".png"), width=25, height = 30, units = "cm")) 
+  
+  
+  ggsave(paste0(path, "TreatV", v, QID ,".png"), width=25, height = 30, units = "cm")
+  
+  p2 <- image_read(paste0(path, "TreatV", v, QID ,".png"))
+  
+  return(image_rotate(p2, 90) %>% image_write(paste0(path, "TreatV", 1, QID ,".png"))) 
   
 }
+
 
 
 
