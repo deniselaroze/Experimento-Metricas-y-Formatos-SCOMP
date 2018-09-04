@@ -7,7 +7,7 @@
 
 args <- commandArgs(TRUE)
 
-#No incluir el llamado a librerias individuales, sino la carpeta donde están instaladas
+#No incluir el llamado a librerias individuales, sino la carpeta donde estÃ¡n instaladas
 .libPaths=("/usr/lib64/R/library/")
 
 require(plyr)
@@ -24,7 +24,7 @@ require(forcats)
 require(pacman)
 pacman::p_load(ggplot2, extrafont, scales)
 require(purrr, warn.conflicts = FALSE, quietly = TRUE)
-require(magick)
+require(OpenImageR)
 
 #Amazon Server
 setwd("/var/www/r.cess.cl/public_html/")
@@ -338,8 +338,8 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
   point <- format_format(big.mark = ".", decimal.mark = ",", scientific = FALSE)
   
   title<-if(grepl("1", mode)) {"Renta Vitalicia Inmediata"
-  } else if(grepl("2", mode))  {"Retiro Programado con Renta Vitalicia Diferida de 2 a�os"
-  } else if(grepl("3", mode)) {"Retiro Programado con Renta Vitalicia Diferida de 4 a�os"
+  } else if(grepl("2", mode))  {"Retiro Programado con Renta Vitalicia Diferida de 2 años"
+  } else if(grepl("3", mode)) {"Retiro Programado con Renta Vitalicia Diferida de 4 años"
   } else {"Retiro Programado"
   }
   
@@ -357,7 +357,7 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
     theme(legend.position="") +
     scale_y_continuous(labels=function(x) format(x, big.mark = ".",decimal.mark=",",
                                                  scientific = FALSE)#,
-                       #                    sec.axis = sec_axis(~./240, name = "Pensi�n Mensual (pesos)", labels=function(x) format(x, big.mark = ".", decimal.mark = ",", scientific = FALSE))
+                       #                    sec.axis = sec_axis(~./240, name = "Pensión Mensual (pesos)", labels=function(x) format(x, big.mark = ".", decimal.mark = ",", scientific = FALSE))
     )+
     ylab(y_labels)  + xlab("")  +
     theme(axis.text.y=element_text(size=15 , angle=90),
@@ -366,20 +366,17 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
           panel.grid.major.x = element_blank(),
           panel.grid.major.y = element_line(colour = "Grey60", linetype = "dashed"))+
     geom_text(aes(label = paste0("$",point(val_pesos_pension)) , angle=90, size = 6, vjust = 0.4, hjust= -0.1)) +
-    geom_text(aes(label = paste("Opci�n", tbl$opcion, ":") ), size=5 , angle=90, vjust = 0.4, hjust= 1) +
+    geom_text(aes(label = paste("Opción", tbl$opcion, ":") ), size=5 , angle=90, vjust = 0.4, hjust= 1) +
     coord_cartesian(ylim=c(min,max))  #coord_flip() +
   
+  ggsave(paste0(path, "TreatV", v, QID ,".png"), width=30, height = 30, units = "cm")
   
+  p2 <- readImage(paste0(path, "TreatV", v, QID ,".png"))
   
-  ggsave(paste0(path, "TreatV", v, QID ,".png"), width=25, height = 30, units = "cm")
+  return(rotateImage(p2, 270) %>% writeImage(paste0(path, "TreatVRotated", 1, QID ,".png"))) 
   
-  p2 <- image_read(paste0(path, "TreatV", v, QID ,".png"))
-  
-  return(image_rotate(p2, 90) %>% image_write(paste0(path, "TreatV", 1, QID ,".png"))) 
-  
+ 
 }
-
-
 
 
 #fcn.treat4("F", "nivel4", "2a", "co_2arp" )
@@ -416,10 +413,10 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
 # econ<-"nivel1"
 # pg<-"b"
 
-gender<-args[1]   ## Género
+gender<-args[1]   ## GÃ©nero
 econ<-args[2]    ## SES
-mode1Q<-args[3] ## primera selección modalidad
-mode2Q<-args[4] ## segunda selección modalidad
+mode1Q<-args[3] ## primera selecciÃ³n modalidad
+mode2Q<-args[4] ## segunda selecciÃ³n modalidad
 pg<-args[5]
 
 
