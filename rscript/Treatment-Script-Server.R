@@ -1,4 +1,3 @@
-
 ################################################ 
 ### Data Management for Excel SP
 ### Jul 2018
@@ -24,7 +23,8 @@ require(forcats)
 require(pacman)
 pacman::p_load(ggplot2, extrafont, scales)
 require(purrr, warn.conflicts = FALSE, quietly = TRUE)
-require(OpenImageR)
+require(magick,  warn.conflicts = FALSE, quietly = TRUE)
+#require(OpenImageR)
 
 #Amazon Server
 setwd("/var/www/r.cess.cl/public_html/")
@@ -32,6 +32,7 @@ setwd("/var/www/r.cess.cl/public_html/")
 #Parameters
 pesouf<-27205.11 ### 3 de agosto de 2018
 path<-"/var/www/r.cess.cl/public_html/sp/"
+
 
 load("/var/www/r.cess.cl/public_html/sp/nuevaBD.RData")
 
@@ -368,14 +369,12 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
     geom_text(aes(label = paste0("$",point(val_pesos_pension)) , angle=90, size = 6, vjust = 0.4, hjust= -0.1)) +
     geom_text(aes(label = paste("Opción", tbl$opcion, ":") ), size=5 , angle=90, vjust = 0.4, hjust= 1) +
     coord_cartesian(ylim=c(min,max))  #coord_flip() +
+
+
+
+  return(ggsave(paste0(path, "TreatV", v, QID ,".png"), width=25, height = 30, units = "cm"))
+
   
-  ggsave(paste0(path, "TreatV", v, QID ,".png"), width=30, height = 30, units = "cm")
-  
-  p2 <- readImage(paste0(path, "TreatV", v, QID ,".png"))
-  
-  return(rotateImage(p2, 270) %>% writeImage(paste0(path, "TreatVRotated", 1, QID ,".png"))) 
-  
- 
 }
 
 
@@ -411,7 +410,7 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
 # mode2Q<-"3"
 # gender<-"F"
 # econ<-"nivel1"
-# pg<-"b"
+#pg<-"b"
 
 gender<-args[1]   ## GÃ©nero
 econ<-args[2]    ## SES
@@ -450,16 +449,23 @@ all.files$VPN<-all.files$val_pesos_pension*12*20
 
 #### list of treatment functions
 namedVF<-list(control=fcn.control, treat1=fcn.treat1, treat2=fcn.treat2, treat3=fcn.treat3, treat4=fcn.treat4  )
-#namedVF<-list(control=fcn.control, control=fcn.control, control=fcn.control, control=fcn.control, control=fcn.control )
+#namedVF<-list(control=fcn.treat4, treat1=fcn.treat4, treat2=fcn.treat4, treat3=fcn.treat4, treat4=fcn.treat4 )
 
 #### Random selection of treatment without replacement
 selected<-sample(namedVF, 2, replace=FALSE)
 selectedQID<-names(selected) ## list of selected treatments to send to Qualtrics
 
 
+
 ### executing treatments
 selected[[1]](gender, econ, pairvct[1], pair, v=1)
 selected[[2]](gender, econ, pairvct[2], pair, v=2)
+
+#selectedQID<-list("treat1", "treat4")
+#if ("treat4" %in% selectedQID){
+#  p2 <- image_read(paste0("TreatV", 1, QID ,".png"))
+#  image_rotate(p2, 90) %>% image_write(paste0("TreatVRotate", 1, QID ,".png")) 
+#} else {""}
 
 
 #### Payment lists for treatments
@@ -501,4 +507,4 @@ pay.op2<-fcn.payment(gender, econ, pairvct[2], pair)
 
 #envio de datos a qualtrics
 to_qs<-c(pay.op1, pay.op2, selectedQID)
-cat(sprintf("End of R code, this is the output: %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", to_qs[1], to_qs[2], to_qs[3], to_qs[4], to_qs[5], to_qs[6], to_qs[7], to_qs[8], to_qs[9], to_qs[10], to_qs[11],to_qs[12], to_qs[13], to_qs[14], to_qs[15], to_qs[16], to_qs[17], to_qs[18], to_qs[19], to_qs[20], to_qs[21],to_qs[22], to_qs[23], to_qs[24], to_qs[25], to_qs[26], to_qs[27], to_qs[28], to_qs[29], to_qs[30], to_qs[31], to_qs[32]))
+cat(sprintf("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s", to_qs[1], to_qs[2], to_qs[3], to_qs[4], to_qs[5], to_qs[6], to_qs[7], to_qs[8], to_qs[9], to_qs[10], to_qs[11],to_qs[12], to_qs[13], to_qs[14], to_qs[15], to_qs[16], to_qs[17], to_qs[18], to_qs[19], to_qs[20], to_qs[21],to_qs[22], to_qs[23], to_qs[24], to_qs[25], to_qs[26], to_qs[27], to_qs[28], to_qs[29], to_qs[30], to_qs[31], to_qs[32]))
