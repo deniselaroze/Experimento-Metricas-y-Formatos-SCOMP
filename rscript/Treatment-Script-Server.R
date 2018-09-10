@@ -6,7 +6,7 @@
 
 args <- commandArgs(TRUE)
 
-#No incluir el llamado a librerias individuales, sino la carpeta donde estÃ¡n instaladas
+#No incluir el llamado a librerias individuales, sino la carpeta donde estÃÂ¡n instaladas
 .libPaths=("/usr/lib64/R/library/")
 
 require(plyr)
@@ -339,8 +339,8 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
   point <- format_format(big.mark = ".", decimal.mark = ",", scientific = FALSE)
   
   title<-if(grepl("1", mode)) {"Renta Vitalicia Inmediata"
-  } else if(grepl("2", mode))  {"Retiro Programado con Renta Vitalicia Diferida de 2 años"
-  } else if(grepl("3", mode)) {"Retiro Programado con Renta Vitalicia Diferida de 4 años"
+  } else if(grepl("2", mode))  {"Retiro Programado con Renta Vitalicia Diferida de 2 a&ntilde;os"
+  } else if(grepl("3", mode)) {"Retiro Programado con Renta Vitalicia Diferida de 4 a&ntilde;os"
   } else {"Retiro Programado"
   }
   
@@ -358,7 +358,7 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
     theme(legend.position="") +
     scale_y_continuous(labels=function(x) format(x, big.mark = ".",decimal.mark=",",
                                                  scientific = FALSE)#,
-                       #                    sec.axis = sec_axis(~./240, name = "Pensión Mensual (pesos)", labels=function(x) format(x, big.mark = ".", decimal.mark = ",", scientific = FALSE))
+                       #                    sec.axis = sec_axis(~./240, name = "PensiÃ³n Mensual (pesos)", labels=function(x) format(x, big.mark = ".", decimal.mark = ",", scientific = FALSE))
     )+
     ylab(y_labels)  + xlab("")  +
     theme(axis.text.y=element_text(size=15 , angle=90),
@@ -412,10 +412,10 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
 # econ<-"nivel1"
 #pg<-"b"
 
-gender<-args[1]   ## GÃ©nero
+gender<-args[1]   ## GÃÂ©nero
 econ<-args[2]    ## SES
-mode1Q<-args[3] ## primera selecciÃ³n modalidad
-mode2Q<-args[4] ## segunda selecciÃ³n modalidad
+mode1Q<-args[3] ## primera selecciÃÂ³n modalidad
+mode2Q<-args[4] ## segunda selecciÃÂ³n modalidad
 pg<-args[5]
 
 
@@ -504,7 +504,12 @@ fcn.payment <- function(gender, econ, mode, pair){
 pay.op1<-fcn.payment(gender, econ, pairvct[1], pair)
 pay.op2<-fcn.payment(gender, econ, pairvct[2], pair)
 
+id<-paste0(gender, econ, ".", mode, ".", pair)
+potsize<-(all.files$saldo[all.files$id==id])
+potsize
+potsize<-potsize[1]
+potsize
 
 #envio de datos a qualtrics
-to_qs<-c(pay.op1, pay.op2, selectedQID)
+to_qs<-c(pay.op1, pay.op2, selectedQID, potsize)
 cat(sprintf("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s", to_qs[1], to_qs[2], to_qs[3], to_qs[4], to_qs[5], to_qs[6], to_qs[7], to_qs[8], to_qs[9], to_qs[10], to_qs[11],to_qs[12], to_qs[13], to_qs[14], to_qs[15], to_qs[16], to_qs[17], to_qs[18], to_qs[19], to_qs[20], to_qs[21],to_qs[22], to_qs[23], to_qs[24], to_qs[25], to_qs[26], to_qs[27], to_qs[28], to_qs[29], to_qs[30], to_qs[31], to_qs[32]))
