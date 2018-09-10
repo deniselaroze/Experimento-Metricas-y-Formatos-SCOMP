@@ -485,12 +485,12 @@ fcn.payment <- function(gender, econ, mode, pair){
   n <- 15
   payment$pay<- ifelse(payment$VPN==0, 0, 
                        ifelse(payment$VPN==max(payment$VPN, na.rm=T), 1500, 
-                              ifelse(payment$VPN==sort(payment$VPN,partial=n-1)[n-1], 1250,
-                                     ifelse(payment$VPN==sort(payment$VPN,partial=n-2)[n-2], 1000, 
-                                            ifelse(payment$VPN==sort(payment$VPN,partial=n-3)[n-3], 750,
+                              ifelse(payment$VPN==sort(payment$VPN,partial=n-1)[n-1], 1400,
+                                     ifelse(payment$VPN==sort(payment$VPN,partial=n-2)[n-2], 1200, 
+                                            ifelse(payment$VPN==sort(payment$VPN,partial=n-3)[n-3], 900,
                                                    ifelse(payment$VPN==sort(payment$VPN,partial=n-4)[n-4], 500, 
-                                                          ifelse(payment$VPN==sort(payment$VPN,partial=n-5)[n-5], 250, 
-                                                                 ifelse(payment$VPN==sort(payment$VPN,partial=n-6)[n-6], 150, 0
+                                                          ifelse(payment$VPN==sort(payment$VPN,partial=n-5)[n-5], 100, 
+                                                                 ifelse(payment$VPN==sort(payment$VPN,partial=n-6)[n-6], 50, 0
                                                                  ) ) ) ) ) ) ) )
   
   
