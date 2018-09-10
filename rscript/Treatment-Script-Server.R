@@ -504,7 +504,7 @@ fcn.payment <- function(gender, econ, mode, pair){
 pay.op1<-fcn.payment(gender, econ, pairvct[1], pair)
 pay.op2<-fcn.payment(gender, econ, pairvct[2], pair)
 
-id<-paste0(gender, econ, ".", mode, ".", pair)
+id<-paste0(gender, econ, ".", pairvct[1], ".", pair)
 potsize<-(all.files$saldo[all.files$id==id])
 potsize
 potsize<-potsize[1]
