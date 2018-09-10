@@ -506,9 +506,8 @@ pay.op2<-fcn.payment(gender, econ, pairvct[2], pair)
 
 id<-paste0(gender, econ, ".", pairvct[1], ".", pair)
 potsize<-(all.files$saldo[all.files$id==id])
-potsize
 potsize<-potsize[1]
-potsize
+
 
 #envio de datos a qualtrics
 to_qs<-c(pay.op1, pay.op2, selectedQID, potsize)
