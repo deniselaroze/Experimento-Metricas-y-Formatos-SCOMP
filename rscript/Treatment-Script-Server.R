@@ -412,14 +412,21 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
 # econ<-"nivel1"
 #pg<-"b"
 
-gender<-args[1]   ## GÃÂ©nero
-econ<-args[2]    ## SES
+genderQ<-args[1]   ## GÃÂ©nero
+econQ<-args[2]    ## SES
 mode1Q<-args[3] ## primera selecciÃÂ³n modalidad
 mode2Q<-args[4] ## segunda selecciÃÂ³n modalidad
-pg<-args[5]
-
+pgQ<-args[5]
 
 ### Adaptation from Qualtrics to R
+gender<-if(genderQ=="1") "M" else "F"
+
+econ<- if(mode1Q=="1") {"nivel1"
+} else if(mode1Q=="2")  {"nivel2"
+} else if(mode1Q=="3")  { "nivel3" } else {"nivel4"}  
+
+pg<- if(pgQ=="1") "a" else "b"   
+
 mode1<-if(mode1Q=="1") {"rp"
 } else if(mode1Q=="2")  {  
   "1"
