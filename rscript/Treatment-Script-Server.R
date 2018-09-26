@@ -367,7 +367,7 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
           panel.grid.major.x = element_blank(),
           panel.grid.major.y = element_line(colour = "Grey60", linetype = "dashed"))+
     geom_text(aes(label = paste0("$",point(val_pesos_pension)) , angle=90, size = 6, vjust = 0.4, hjust= -0.1)) +
-    geom_text(aes(label = paste("Opción", tbl$opcion, ":") ), size=5 , angle=90, vjust = 0.4, hjust= 1) +
+    geom_text(aes(label = paste("Opci&oacuten", tbl$opcion, ":") ), size=5 , angle=90, vjust = 0.4, hjust= 1) +
     coord_cartesian(ylim=c(min,max))  #coord_flip() +
 
 
@@ -452,7 +452,7 @@ pairvct<-sort(pairvct)
 pair<-paste0("co_", pairvct[1], pairvct[2])
 
 QID<-"qualtricsID" # to be replaced by a real Qualtrics ID code, unique to each participant
-all.files$VPN<-all.files$val_pesos_pension*12*20
+
 
 #### list of treatment functions
 namedVF<-list(control=fcn.control, treat1=fcn.treat1, treat2=fcn.treat2, treat3=fcn.treat3, treat4=fcn.treat4  )
@@ -511,11 +511,8 @@ fcn.payment <- function(gender, econ, mode, pair){
 pay.op1<-fcn.payment(gender, econ, pairvct[1], pair)
 pay.op2<-fcn.payment(gender, econ, pairvct[2], pair)
 
-id<-paste0(gender, econ, ".", pairvct[1], ".", pair)
-potsize<-(all.files$saldo[all.files$id==id])
-potsize<-potsize[1]
 
 
 #envio de datos a qualtrics
-to_qs<-c(pay.op1, pay.op2, selectedQID, potsize)
+to_qs<-c(pay.op1, pay.op2, selectedQID)
 cat(sprintf("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s", to_qs[1], to_qs[2], to_qs[3], to_qs[4], to_qs[5], to_qs[6], to_qs[7], to_qs[8], to_qs[9], to_qs[10], to_qs[11],to_qs[12], to_qs[13], to_qs[14], to_qs[15], to_qs[16], to_qs[17], to_qs[18], to_qs[19], to_qs[20], to_qs[21],to_qs[22], to_qs[23], to_qs[24], to_qs[25], to_qs[26], to_qs[27], to_qs[28], to_qs[29], to_qs[30], to_qs[31], to_qs[32]))
