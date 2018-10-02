@@ -370,8 +370,13 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
     geom_text(aes(label = paste("Opción", tbl$opcion, ":") ), size=5 , angle=90, vjust = 0.4, hjust= 1) +
     coord_cartesian(ylim=c(min,max))  #coord_flip() +
   
-  return(ggsave(paste0(path, "TreatV", v, QID ,".png"), width=25, height = 30, units = "cm")) 
+  ggsave(paste0(path, "TreatV", v, QID ,".png"), width=30, height = 30, units = "cm")
   
+  p2 <- readImage(paste0(path, "TreatV", v, QID ,".png"))
+  
+  return(rotateImage(p2, 270) %>% writeImage(paste0(path, "TreatVRotated", 1, QID ,".png"))) 
+  
+ 
 }
 
 
@@ -395,7 +400,7 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
 
 #fcn.treat4("M", "nivel4", "2a", "co_2a3a" )
 
-#fcn.treat4("F", "nivel1", "3a", "co_3a3b" )
+fcn.treat4("F", "nivel1", "3a", "co_3a3b", 1 )
 
 
 #########################

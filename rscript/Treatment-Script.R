@@ -31,7 +31,7 @@ library(purrr)
 #path<-"C:/Users/Denise Laroze P/Documents/GitHub/Experimento-Metricas-y-Formatos-SCOMP/Tratamientos/"
 path<-"~/GitHub/Experimento-Metricas-y-Formatos-SCOMP/Tratamientos/"
 
-load("C:/Users/Profesor/Dropbox/CESS-Santiago/archive/Pensions - JFF/Design info/certificados SP/nuevaBD.RData")
+load("C:/Users/Denise Laroze P/Dropbox/CESS-Santiago/archive/Pensions - JFF/Design info/certificados SP/nuevaBD.RData")
 
 #all.files$VPN<-all.files$val_pesos_pension*12*20
 #QID<-"QualtricsID"
