@@ -31,11 +31,11 @@ library(purrr)
 #path<-"C:/Users/Denise Laroze P/Documents/GitHub/Experimento-Metricas-y-Formatos-SCOMP/Tratamientos/"
 path<-"~/GitHub/Experimento-Metricas-y-Formatos-SCOMP/Tratamientos/"
 
-<<<<<<< HEAD
+
 load("C:/Users/Denise Laroze P/Dropbox/CESS-Santiago/archive/Pensions - JFF/Design info/certificados SP/nuevaBD.RData")
-=======
-load("C:/Users/Profesor/Dropbox/CESS-Santiago/archive/Pensions - JFF/Design info/Certificados SP final/nuevaBDfinal.RData")
->>>>>>> ca34d6b851916ae035bb69fc1bc3533831880941
+
+#load("C:/Users/Profesor/Dropbox/CESS-Santiago/archive/Pensions - JFF/Design info/Certificados SP final/nuevaBDfinal.RData")
+
 
 #all.files$VPN<-all.files$val_pesos_pension*12*20
 #QID<-"QualtricsID"
