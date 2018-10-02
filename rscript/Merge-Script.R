@@ -16,12 +16,12 @@ library(tools)
 #setwd("C:/Users/Mauro/Desktop/SP_excel")#################################
 
 
-setwd("C:/Users/Profesor/Dropbox/CESS-Santiago/archive/Pensions - JFF/Design info/certificados SP")
+setwd("C:/Users/Profesor/Dropbox/CESS-Santiago/archive/Pensions - JFF/Design info/certificados SP Final")
 rm(list = ls())
 
 #Parameters
 pesouf<-27205.11 ### 3 de agosto de 2018
-git<-"C:/Users/Denise Laroze P/Documents/GitHub/Experimento-Metricas-y-Formatos-SCOMP/Tratamientos/"
+#git<-"C:/Users/Denise Laroze P/Documents/GitHub/Experimento-Metricas-y-Formatos-SCOMP/Tratamientos/"
 git<-"~/GitHub/Experimento-Metricas-y-Formatos-SCOMP/Tratamientos/"
 
 
@@ -50,6 +50,7 @@ for(bf in perfil.files){
 table(table(all.files$perfil))
 unique(all.files$perfil)
 
+all.files$grupo<-ifelse(is.na(all.files$grupo), all.files$ï..grupo, all.files$grupo )
 
 all.files$pair<-ifelse(nchar(all.files$csvid)==5, paste0(all.files$csvid, "rp") , all.files$csvid )
 unique(all.files$pair)
@@ -75,17 +76,17 @@ all.files$id<-paste0(all.files$grupo,".", all.files$perfil2,".", all.files$pair2
 ## Transformación de pensión en pesos (valor UF 27.161,48 01/07/2018)
 all.files$val_uf_pension_bru<-as.numeric(all.files$val_uf_pension_bru) #make numeric
 all.files$val_uf_pension_net<-as.numeric(all.files$val_uf_pension_net) #make numeric
+all.files$vpe_fne<-as.numeric(all.files$vpe_fne) #make numeric
 
-all.files$val_pesos_pension<-ifelse(is.na(all.files$val_uf_pension_net), all.files$val_uf_pension_bru*pesouf, 
-                                    all.files$val_uf_pension_net*pesouf)
 
 all.files$val_uf_pension<-ifelse(is.na(all.files$val_uf_pension_net), all.files$val_uf_pension_bru, 
                                  all.files$val_uf_pension_net)
+all.files$val_pesos_pension<-all.files$val_uf_pension*pesouf
 
-
+all.files$VPN<-all.files$vpe_fne*pesouf
 ## Genero nuevo archivo con los cambios
 
-save(all.files, file = "nuevaBD.RData")
+save(all.files, file = "nuevaBDfinal.RData")
 
 #################### End merge #####################################
 

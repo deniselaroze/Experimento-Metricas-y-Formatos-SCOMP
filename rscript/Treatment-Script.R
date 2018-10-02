@@ -31,7 +31,11 @@ library(purrr)
 #path<-"C:/Users/Denise Laroze P/Documents/GitHub/Experimento-Metricas-y-Formatos-SCOMP/Tratamientos/"
 path<-"~/GitHub/Experimento-Metricas-y-Formatos-SCOMP/Tratamientos/"
 
+<<<<<<< HEAD
 load("C:/Users/Denise Laroze P/Dropbox/CESS-Santiago/archive/Pensions - JFF/Design info/certificados SP/nuevaBD.RData")
+=======
+load("C:/Users/Profesor/Dropbox/CESS-Santiago/archive/Pensions - JFF/Design info/Certificados SP final/nuevaBDfinal.RData")
+>>>>>>> ca34d6b851916ae035bb69fc1bc3533831880941
 
 #all.files$VPN<-all.files$val_pesos_pension*12*20
 #QID<-"QualtricsID"
@@ -169,7 +173,6 @@ fcn.treat1 <- function(gender, econ, mode, pair, v){
 ##########################
 
 fcn.treat2 <- function(gender, econ, mode, pair, v){
-  
   if (mode=="rp") {
     
     
@@ -216,21 +219,22 @@ fcn.treat2 <- function(gender, econ, mode, pair, v){
     
     output <- numcolwise(prettyNum)(tbl, big.mark = ".",
                                     decimal.mark = ",")
-    output<-cbind(output[,1], tbl[,2], output[, c(2,4)], tbl[,4])
+    output<-cbind(output[,1], tbl[,2], output[, c(2,4)])
     
     title<-if(grepl("1", mode)) {"Renta Vitalicia Inmediata"
     } else if(grepl("2", mode))  {"Retiro Programado con Renta Vitalicia Diferida de 2 a&ntilde;os"
     } else {"Retiro Programado con Renta Vitalicia Diferida de 4 a&ntilde;os"}
     
     return(htmlTable(output,
-                     header =  c("Opci&oacuten", "Raz&oacuten Social", "Pensi&oacuten mensual en  pesos&dagger;", "P&eacuterdida anual&lowast;",
-                                 "Clasificaci&oacuten de Riesgo <br> de la Compa&ntilde;&iacutea de Seguros&lowast;&lowast;"),
+                     header =  c("Opci&oacuten", "Raz&oacuten Social", "Pensi&oacuten mensual en  pesos&dagger;", "P&eacuterdida anual&lowast;"),
                      caption=title,
                      tfoot="&dagger; Valor calculado en base a UF del d&iacutea 03/08/2018.
                      &lowast; Las categor&iacuteas de Clasificaci&oacuten de Riesgo que permiten a las Compa&ntilde;&iacutea ofrecer
                      Rentas Vitalicias son las siguientes AAA (mejor clasificaci&oacuten), AA, A, BBB (inferior). Cada una de estas categor&iacuteas 
                      puede tener sub&iacutendices &quot;+&quot; o &quot;-&quot;, siendo el sub&iacutendice &quot;+&quot; mejor que el &quot;-&quot;.
-                     &lowast;&lowast; Monto que dejar&iacutea de ganar cada a&ntilde;o de vida.",
+                     &lowast;&lowast; Monto que dejar&iacutea de ganar cada a&ntilde;o de vida.
+
+                     Para obtener mayor informaci&oacuten sobre la clasificaci&oacuten de riesgo de las compa&ntilde;ias de seguro haga click <a href='https://github.com/deniselaroze/Experimento-Metricas-y-Formatos-SCOMP/blob/master/Tratamientos/clasif_riesgo_csv.png' target='_blank'>aqui</a>",  
                      file=paste0(path, "TreatV", v , QID ,".html"), 
                      css.cell = "padding-left: 0.5em; padding-right: 0.5em;",rnames=F
     )
@@ -239,7 +243,9 @@ fcn.treat2 <- function(gender, econ, mode, pair, v){
   
 }
 
-##########################
+
+
+  ##########################
 ### Function - Treatment 3
 ##########################
 
@@ -366,13 +372,19 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
     geom_text(aes(label = paste0("$",point(val_pesos_pension)) , angle=90, size = 6, vjust = 0.4, hjust= -0.1)) +
     geom_text(aes(label = paste("Opción", tbl$opcion, ":") ), size=5 , angle=90, vjust = 0.4, hjust= 1) +
     coord_cartesian(ylim=c(min,max))  #coord_flip() +
+ 
   
-  return(ggsave(paste0(path, "TreatV", v, QID ,".png"), width=25, height = 30, units = "cm")) 
+  
+  ggsave(paste0(path, "TreatV", v, QID ,".png"), width=25, height = 30, units = "cm")
+  
+  p2 <- image_read(paste0(path, "TreatV", v, QID ,".png"))
+  
+  return(image_rotate(p2, 90) %>% image_write(paste0(path, "TreatV", 1, QID ,".png"))) 
   
 }
 
 
-
+fcn.treat4("F", "nivel1", "3a", "co_3a3b", 1 )
 #fcn.treat4("F", "nivel4", "2a", "co_2arp" )
 
 ##################################
@@ -389,13 +401,13 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
 #fcn.treat1("F", "nivel2", "1a", "co_1arp" )
 
 
-#fcn.treat2("F", "nivel2", "1a", "co_1arp", 1 )
+fcn.treat2("F", "nivel2", "1a", "co_1arp", 1 )
 
 #fcn.treat3("F", "nivel2", "rp", "co_1arp", 2 )
 
 #fcn.treat4("M", "nivel4", "2a", "co_2a3a" )
 
-#fcn.treat4("F", "nivel1", "3a", "co_3a3b" )
+fcn.treat4("F", "nivel1", "3a", "co_3a3b", 1 )
 
 
 #########################

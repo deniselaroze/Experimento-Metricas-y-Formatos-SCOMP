@@ -1,4 +1,3 @@
-
 ################################################ 
 ### Data Management for Excel SP
 ### Jul 2018
@@ -7,7 +6,7 @@
 
 args <- commandArgs(TRUE)
 
-#No incluir el llamado a librerias individuales, sino la carpeta donde están instaladas
+#No incluir el llamado a librerias individuales, sino la carpeta donde estÃÂ¡n instaladas
 .libPaths=("/usr/lib64/R/library/")
 
 require(plyr)
@@ -24,7 +23,8 @@ require(forcats)
 require(pacman)
 pacman::p_load(ggplot2, extrafont, scales)
 require(purrr, warn.conflicts = FALSE, quietly = TRUE)
-
+require(magick,  warn.conflicts = FALSE, quietly = TRUE)
+#require(OpenImageR)
 
 #Amazon Server
 setwd("/var/www/r.cess.cl/public_html/")
@@ -32,6 +32,7 @@ setwd("/var/www/r.cess.cl/public_html/")
 #Parameters
 pesouf<-27205.11 ### 3 de agosto de 2018
 path<-"/var/www/r.cess.cl/public_html/sp/"
+
 
 load("/var/www/r.cess.cl/public_html/sp/nuevaBD.RData")
 
@@ -321,7 +322,6 @@ fcn.treat3 <- function(gender, econ, mode, pair, v){
 
 #id<-"Fnivel4.1b.co_1brp"
 
-
 fcn.treat4 <- function(gender, econ, mode, pair, v){
   id<-paste0(gender, econ, ".", mode, ".", pair)
   
@@ -339,8 +339,8 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
   point <- format_format(big.mark = ".", decimal.mark = ",", scientific = FALSE)
   
   title<-if(grepl("1", mode)) {"Renta Vitalicia Inmediata"
-  } else if(grepl("2", mode))  {"Retiro Programado con Renta Vitalicia Diferida de 2 a�os"
-  } else if(grepl("3", mode)) {"Retiro Programado con Renta Vitalicia Diferida de 4 a�os"
+  } else if(grepl("2", mode))  {"Retiro Programado con Renta Vitalicia Diferida de 2 a&ntilde;os"
+  } else if(grepl("3", mode)) {"Retiro Programado con Renta Vitalicia Diferida de 4 a&ntilde;os"
   } else {"Retiro Programado"
   }
   
@@ -358,7 +358,7 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
     theme(legend.position="") +
     scale_y_continuous(labels=function(x) format(x, big.mark = ".",decimal.mark=",",
                                                  scientific = FALSE)#,
-                       #                    sec.axis = sec_axis(~./240, name = "Pensi�n Mensual (pesos)", labels=function(x) format(x, big.mark = ".", decimal.mark = ",", scientific = FALSE))
+                       #                    sec.axis = sec_axis(~./240, name = "PensiÃ³n Mensual (pesos)", labels=function(x) format(x, big.mark = ".", decimal.mark = ",", scientific = FALSE))
     )+
     ylab(y_labels)  + xlab("")  +
     theme(axis.text.y=element_text(size=15 , angle=90),
@@ -367,10 +367,18 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
           panel.grid.major.x = element_blank(),
           panel.grid.major.y = element_line(colour = "Grey60", linetype = "dashed"))+
     geom_text(aes(label = paste0("$",point(val_pesos_pension)) , angle=90, size = 6, vjust = 0.4, hjust= -0.1)) +
-    geom_text(aes(label = paste("Opci�n", tbl$opcion, ":") ), size=5 , angle=90, vjust = 0.4, hjust= 1) +
+    geom_text(aes(label = paste("Opci&oacuten", tbl$opcion, ":") ), size=5 , angle=90, vjust = 0.4, hjust= 1) +
     coord_cartesian(ylim=c(min,max))  #coord_flip() +
+<<<<<<< HEAD
   
   ggsave(paste0(path, "TreatV", v, QID ,".png"), width=30, height = 30, units = "cm")
+=======
+
+
+
+  return(ggsave(paste0(path, "TreatV", v, QID ,".png"), width=25, height = 30, units = "cm"))
+
+>>>>>>> ca34d6b851916ae035bb69fc1bc3533831880941
   
   p2 <- readImage(paste0(path, "TreatV", v, QID ,".png"))
   
@@ -378,7 +386,6 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
   
  
 }
-
 
 
 #fcn.treat4("F", "nivel4", "2a", "co_2arp" )
@@ -413,16 +420,23 @@ fcn.treat4("F", "nivel1", "3a", "co_3a3b", 1 )
 # mode2Q<-"3"
 # gender<-"F"
 # econ<-"nivel1"
-# pg<-"b"
+#pg<-"b"
 
-gender<-args[1]   ## Género
-econ<-args[2]    ## SES
-mode1Q<-args[3] ## primera selección modalidad
-mode2Q<-args[4] ## segunda selección modalidad
-pg<-args[5]
-
+genderQ<-args[1]   ## GÃÂ©nero
+econQ<-args[2]    ## SES
+mode1Q<-args[3] ## primera selecciÃÂ³n modalidad
+mode2Q<-args[4] ## segunda selecciÃÂ³n modalidad
+pgQ<-args[5]
 
 ### Adaptation from Qualtrics to R
+gender<-if(genderQ=="1") "M" else "F"
+
+econ<- if(mode1Q=="1") {"nivel1"
+} else if(mode1Q=="2")  {"nivel2"
+} else if(mode1Q=="3")  { "nivel3" } else {"nivel4"}  
+
+pg<- if(pgQ=="1") "a" else "b"   
+
 mode1<-if(mode1Q=="1") {"rp"
 } else if(mode1Q=="2")  {  
   "1"
@@ -448,20 +462,27 @@ pairvct<-sort(pairvct)
 pair<-paste0("co_", pairvct[1], pairvct[2])
 
 QID<-"qualtricsID" # to be replaced by a real Qualtrics ID code, unique to each participant
-all.files$VPN<-all.files$val_pesos_pension*12*20
+
 
 #### list of treatment functions
 namedVF<-list(control=fcn.control, treat1=fcn.treat1, treat2=fcn.treat2, treat3=fcn.treat3, treat4=fcn.treat4  )
-#namedVF<-list(control=fcn.control, control=fcn.control, control=fcn.control, control=fcn.control, control=fcn.control )
+#namedVF<-list(control=fcn.treat4, treat1=fcn.treat4, treat2=fcn.treat4, treat3=fcn.treat4, treat4=fcn.treat4 )
 
 #### Random selection of treatment without replacement
 selected<-sample(namedVF, 2, replace=FALSE)
 selectedQID<-names(selected) ## list of selected treatments to send to Qualtrics
 
 
+
 ### executing treatments
 selected[[1]](gender, econ, pairvct[1], pair, v=1)
 selected[[2]](gender, econ, pairvct[2], pair, v=2)
+
+#selectedQID<-list("treat1", "treat4")
+#if ("treat4" %in% selectedQID){
+#  p2 <- image_read(paste0("TreatV", 1, QID ,".png"))
+#  image_rotate(p2, 90) %>% image_write(paste0("TreatVRotate", 1, QID ,".png")) 
+#} else {""}
 
 
 #### Payment lists for treatments
@@ -481,12 +502,12 @@ fcn.payment <- function(gender, econ, mode, pair){
   n <- 15
   payment$pay<- ifelse(payment$VPN==0, 0, 
                        ifelse(payment$VPN==max(payment$VPN, na.rm=T), 1500, 
-                              ifelse(payment$VPN==sort(payment$VPN,partial=n-1)[n-1], 1250,
-                                     ifelse(payment$VPN==sort(payment$VPN,partial=n-2)[n-2], 1000, 
-                                            ifelse(payment$VPN==sort(payment$VPN,partial=n-3)[n-3], 750,
+                              ifelse(payment$VPN==sort(payment$VPN,partial=n-1)[n-1], 1400,
+                                     ifelse(payment$VPN==sort(payment$VPN,partial=n-2)[n-2], 1200, 
+                                            ifelse(payment$VPN==sort(payment$VPN,partial=n-3)[n-3], 900,
                                                    ifelse(payment$VPN==sort(payment$VPN,partial=n-4)[n-4], 500, 
-                                                          ifelse(payment$VPN==sort(payment$VPN,partial=n-5)[n-5], 250, 
-                                                                 ifelse(payment$VPN==sort(payment$VPN,partial=n-6)[n-6], 150, 0
+                                                          ifelse(payment$VPN==sort(payment$VPN,partial=n-5)[n-5], 100, 
+                                                                 ifelse(payment$VPN==sort(payment$VPN,partial=n-6)[n-6], 50, 0
                                                                  ) ) ) ) ) ) ) )
   
   
@@ -501,6 +522,7 @@ pay.op1<-fcn.payment(gender, econ, pairvct[1], pair)
 pay.op2<-fcn.payment(gender, econ, pairvct[2], pair)
 
 
+
 #envio de datos a qualtrics
 to_qs<-c(pay.op1, pay.op2, selectedQID)
-cat(sprintf("End of R code, this is the output: %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", to_qs[1], to_qs[2], to_qs[3], to_qs[4], to_qs[5], to_qs[6], to_qs[7], to_qs[8], to_qs[9], to_qs[10], to_qs[11],to_qs[12], to_qs[13], to_qs[14], to_qs[15], to_qs[16], to_qs[17], to_qs[18], to_qs[19], to_qs[20], to_qs[21],to_qs[22], to_qs[23], to_qs[24], to_qs[25], to_qs[26], to_qs[27], to_qs[28], to_qs[29], to_qs[30], to_qs[31], to_qs[32]))
+cat(sprintf("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s", to_qs[1], to_qs[2], to_qs[3], to_qs[4], to_qs[5], to_qs[6], to_qs[7], to_qs[8], to_qs[9], to_qs[10], to_qs[11],to_qs[12], to_qs[13], to_qs[14], to_qs[15], to_qs[16], to_qs[17], to_qs[18], to_qs[19], to_qs[20], to_qs[21],to_qs[22], to_qs[23], to_qs[24], to_qs[25], to_qs[26], to_qs[27], to_qs[28], to_qs[29], to_qs[30], to_qs[31], to_qs[32]))
