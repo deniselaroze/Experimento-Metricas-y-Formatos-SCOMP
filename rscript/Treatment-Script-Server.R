@@ -6,7 +6,7 @@
 
 args <- commandArgs(TRUE)
 
-#No incluir el llamado a librerias individuales, sino la carpeta donde estÃÂ¡n instaladas
+#No incluir el llamado a librerias individuales, sino la carpeta donde estÃÂÃÂ¡n instaladas
 .libPaths=("/usr/lib64/R/library/")
 
 require(plyr)
@@ -34,7 +34,7 @@ pesouf<-27205.11 ### 3 de agosto de 2018
 path<-"/var/www/r.cess.cl/public_html/sp/"
 
 
-load("/var/www/r.cess.cl/public_html/sp/nuevaBD.RData")
+load("/var/www/r.cess.cl/public_html/sp/nuevaBDfinal.RData")
 
 
 
@@ -173,7 +173,6 @@ fcn.treat1 <- function(gender, econ, mode, pair, v){
 ##########################
 
 fcn.treat2 <- function(gender, econ, mode, pair, v){
-  
   if (mode=="rp") {
     
     
@@ -220,21 +219,22 @@ fcn.treat2 <- function(gender, econ, mode, pair, v){
     
     output <- numcolwise(prettyNum)(tbl, big.mark = ".",
                                     decimal.mark = ",")
-    output<-cbind(output[,1], tbl[,2], output[, c(2,4)], tbl[,4])
+    output<-cbind(output[,1], tbl[,2], output[, c(2,4)])
     
     title<-if(grepl("1", mode)) {"Renta Vitalicia Inmediata"
     } else if(grepl("2", mode))  {"Retiro Programado con Renta Vitalicia Diferida de 2 a&ntilde;os"
     } else {"Retiro Programado con Renta Vitalicia Diferida de 4 a&ntilde;os"}
     
     return(htmlTable(output,
-                     header =  c("Opci&oacuten", "Raz&oacuten Social", "Pensi&oacuten mensual en  pesos&dagger;", "P&eacuterdida anual&lowast;",
-                                 "Clasificaci&oacuten de Riesgo <br> de la Compa&ntilde;&iacutea de Seguros&lowast;&lowast;"),
+                     header =  c("Opci&oacuten", "Raz&oacuten Social", "Pensi&oacuten mensual en  pesos&dagger;", "P&eacuterdida anual&lowast;"),
                      caption=title,
                      tfoot="&dagger; Valor calculado en base a UF del d&iacutea 03/08/2018.
                      &lowast; Las categor&iacuteas de Clasificaci&oacuten de Riesgo que permiten a las Compa&ntilde;&iacutea ofrecer
                      Rentas Vitalicias son las siguientes AAA (mejor clasificaci&oacuten), AA, A, BBB (inferior). Cada una de estas categor&iacuteas 
                      puede tener sub&iacutendices &quot;+&quot; o &quot;-&quot;, siendo el sub&iacutendice &quot;+&quot; mejor que el &quot;-&quot;.
-                     &lowast;&lowast; Monto que dejar&iacutea de ganar cada a&ntilde;o de vida.",
+                     &lowast;&lowast; Monto que dejar&iacutea de ganar cada a&ntilde;o de vida.
+                     
+                     Para obtener mayor informaci&oacuten sobre la clasificaci&oacuten de riesgo de las compa&ntilde;ias de seguro haga click <a href='https://github.com/deniselaroze/Experimento-Metricas-y-Formatos-SCOMP/blob/master/Tratamientos/clasif_riesgo_csv.png' target='_blank'>aqui</a>",  
                      file=paste0(path, "TreatV", v , QID ,".html"), 
                      css.cell = "padding-left: 0.5em; padding-right: 0.5em;",rnames=F
     )
@@ -242,6 +242,7 @@ fcn.treat2 <- function(gender, econ, mode, pair, v){
   }
   
 }
+
 
 ##########################
 ### Function - Treatment 3
@@ -358,7 +359,7 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
     theme(legend.position="") +
     scale_y_continuous(labels=function(x) format(x, big.mark = ".",decimal.mark=",",
                                                  scientific = FALSE)#,
-                       #                    sec.axis = sec_axis(~./240, name = "PensiÃ³n Mensual (pesos)", labels=function(x) format(x, big.mark = ".", decimal.mark = ",", scientific = FALSE))
+                       #                    sec.axis = sec_axis(~./240, name = "PensiÃÂ³n Mensual (pesos)", labels=function(x) format(x, big.mark = ".", decimal.mark = ",", scientific = FALSE))
     )+
     ylab(y_labels)  + xlab("")  +
     theme(axis.text.y=element_text(size=15 , angle=90),
@@ -412,10 +413,10 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
 #mode2Q<-"3"
 #pgQ<-"1"
 
-genderQ<-args[1]   ## GÃÂ©nero
+genderQ<-args[1]   ## GÃÂÃÂ©nero
 econQ<-args[2]    ## SES
-mode1Q<-args[3] ## primera selecciÃÂ³n modalidad
-mode2Q<-args[4] ## segunda selecciÃÂ³n modalidad
+mode1Q<-args[3] ## primera selecciÃÂÃÂ³n modalidad
+mode2Q<-args[4] ## segunda selecciÃÂÃÂ³n modalidad
 pgQ<-args[5]
 
 ### Adaptation from Qualtrics to R
@@ -454,7 +455,7 @@ pairvct<-sort(pairvct)
 pair<-paste0("co_", pairvct[1], pairvct[2])
 
 QID<-"qualtricsID" # to be replaced by a real Qualtrics ID code, unique to each participant
-all.files$VPN<-all.files$val_pesos_pension*12*20
+
 
 #### list of treatment functions
 namedVF<-list(control=fcn.control, treat1=fcn.treat1, treat2=fcn.treat2, treat3=fcn.treat3, treat4=fcn.treat4  )
