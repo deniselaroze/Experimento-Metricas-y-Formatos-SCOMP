@@ -367,14 +367,14 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
           panel.grid.major.x = element_blank(),
           panel.grid.major.y = element_line(colour = "Grey60", linetype = "dashed"))+
     geom_text(aes(label = paste0("$",point(val_pesos_pension)) , angle=90, size = 6, vjust = 0.4, hjust= -0.1)) +
-    geom_text(aes(label = paste("Opci&oacuten", tbl$opcion, ":") ), size=5 , angle=90, vjust = 0.4, hjust= 1) +
+    geom_text(aes(label = paste("Opción", tbl$opcion, ":") ), size=5 , angle=90, vjust = 0.4, hjust= 1) +
     coord_cartesian(ylim=c(min,max))  #coord_flip() +
-
   
-  ggsave(paste0(path, "TreatV", v, QID ,".png"), width=30, height = 30, units = "cm")
-
+  
+  
   return(ggsave(paste0(path, "TreatV", v, QID ,".png"), width=25, height = 30, units = "cm"))
-
+  
+  
 }
 
 
@@ -397,7 +397,7 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
 
 #fcn.treat4("M", "nivel4", "2a", "co_2a3a" )
 
-#fcn.treat4("F", "nivel1", "3a", "co_3a3b", 1 )
+#fcn.treat4("F", "nivel1", "3a", "co_3a3b" )
 
 
 #########################
@@ -406,11 +406,11 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
 
 
 # Simulation data that would come from Qualtrics
-# mode1Q<-"1"
-# mode2Q<-"3"
-# gender<-"F"
-# econ<-"nivel1"
-#pg<-"b"
+#genderQ<-"1"
+#econQ<-"1"
+#mode1Q<-"1"
+#mode2Q<-"3"
+#pgQ<-"1"
 
 genderQ<-args[1]   ## GÃÂ©nero
 econQ<-args[2]    ## SES
@@ -419,13 +419,15 @@ mode2Q<-args[4] ## segunda selecciÃÂ³n modalidad
 pgQ<-args[5]
 
 ### Adaptation from Qualtrics to R
+
 gender<-if(genderQ=="1") "M" else "F"
 
-econ<- if(mode1Q=="1") {"nivel1"
-} else if(mode1Q=="2")  {"nivel2"
-} else if(mode1Q=="3")  { "nivel3" } else {"nivel4"}  
+econ<- if(econQ=="1") {"nivel1"
+} else if(econQ=="2")  {"nivel2"
+} else if(econQ=="3")  {"nivel3" } else {"nivel4"}  
 
 pg<- if(pgQ=="1") "a" else "b"   
+
 
 mode1<-if(mode1Q=="1") {"rp"
 } else if(mode1Q=="2")  {  
@@ -436,7 +438,7 @@ mode1<-if(mode1Q=="1") {"rp"
 mode2<-if(mode2Q=="1") {"rp"
 } else if(mode2Q=="2")  {  
   "1"
-} else if(mode2Q =="3")  {  
+} else if(mode2Q=="3")  {  
   "2"} else {"3"}
 
 mode1pg<- if (grepl("rp", mode1)) mode1 else paste0(mode1,pg)
@@ -452,7 +454,7 @@ pairvct<-sort(pairvct)
 pair<-paste0("co_", pairvct[1], pairvct[2])
 
 QID<-"qualtricsID" # to be replaced by a real Qualtrics ID code, unique to each participant
-
+all.files$VPN<-all.files$val_pesos_pension*12*20
 
 #### list of treatment functions
 namedVF<-list(control=fcn.control, treat1=fcn.treat1, treat2=fcn.treat2, treat3=fcn.treat3, treat4=fcn.treat4  )
@@ -510,6 +512,8 @@ fcn.payment <- function(gender, econ, mode, pair){
 
 pay.op1<-fcn.payment(gender, econ, pairvct[1], pair)
 pay.op2<-fcn.payment(gender, econ, pairvct[2], pair)
+
+id<-paste0(gender, econ, ".", pairvct[1], ".", pair)
 
 
 
