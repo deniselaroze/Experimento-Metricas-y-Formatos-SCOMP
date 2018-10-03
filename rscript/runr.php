@@ -1,21 +1,32 @@
 <?php
+error_reporting(E_ALL & ~E_NOTICE);
 header('Content-Type: text/html; charset=utf-8');
 
-$gender = getGender();
-$econ = getEcon();
+$genderQ = getGender();
+$econQ = getEcon();
 $mode1Q = getMode1Q();
 $mode2Q = getMode2Q();
-$pg = getPg();
+$pgQ = getPg();
 
 // execute R script from shell
 
-$command = "Rscript /var/www/r.cess.cl/public_html/Treatment-Script.R $gender $econ $mode1Q $mode2Q $pg";
+#logConsole('genderQ', $genderQ, true);
+#logConsole('econQ', $econQ, true);
+#logConsole('mode1Q', $mode1Q, true);
+#logConsole('mode2Q', $mode2Q, true);
+#logConsole('pgQ', $pgQ, true);
+
+$command = "Rscript /var/www/r.cess.cl/public_html/Treatment-Script.R $genderQ $econQ $mode1Q $mode2Q $pgQ";
 $out = trim(shell_exec($command));
 
 #echo(explode(',', $out));
 $pagos = explode(',', $out);
 
-echo "pay10=" . (string)$pagos[0] . "&";
+
+#header('Content-Type: application/json');
+#echo(json_encode($pays));
+
+echo "pay10=" . $pagos[0] . "&";
 echo "pay11=" . $pagos[1] . "&";
 echo "pay12=" . $pagos[2] . "&";
 echo "pay13=" . $pagos[3] . "&";
@@ -48,11 +59,13 @@ echo "pay214=" . $pagos[29] . "&";
 echo "treatv1=" . $pagos[30] . "&";
 echo "treatv2=" . $pagos[31];
 
+
+
 #======================================================================================
 
 function getGender(){
-	if(isset($_GET['gender'])){
-		$str = trim($_GET['gender']);
+	if(isset($_GET['genderQ'])){
+		$str = trim($_GET['genderQ']);
 		if(is_string($str)){
 			return $str;
 		}else{
@@ -64,8 +77,8 @@ function getGender(){
 }
 
 function getEcon(){
-	if(isset($_GET['econ'])){
-		$str = trim($_GET['econ']);
+	if(isset($_GET['econQ'])){
+		$str = trim($_GET['econQ']);
 		if(is_string($str)){
 			return $str;
 		}else{
@@ -103,8 +116,8 @@ function getMode2Q(){
 }
 
 function getPg(){
-	if(isset($_GET['pg'])){
-		$str = trim($_GET['pg']);
+	if(isset($_GET['pgQ'])){
+		$str = trim($_GET['pgQ']);
 		if(is_string($str)){
 			return $str;
 		}else{
@@ -117,8 +130,50 @@ function getPg(){
 
 function writeLog($msg){
 
-	@file_put_contents('./runr.log', date('Y-m-d h:i:s') . "\t" . $gender . "\t" . $msg . "\n");
+	@file_put_contents('./runr.log', date('Y-m-d h:i:s') . "\t" . $genderQ . "\t" . $msg . "\n");
 }
 
-?>
+function logConsole($name, $data = NULL, $jsEval = FALSE)
+ {
+      if (! $name) return false;
 
+      $isevaled = false;
+      $type = ($data || gettype($data)) ? 'Type: ' . gettype($data) : '';
+
+      if ($jsEval && (is_array($data) || is_object($data)))
+      {
+           $data = 'eval(' . preg_replace('#[\s\r\n\t\0\x0B]+#', '', json_encode($data)) . ')';
+           $isevaled = true;
+      }
+      else
+      {
+           $data = json_encode($data);
+      }
+
+      # sanitalize
+      $data = $data ? $data : '';
+      $search_array = array("#'#", '#""#', "#''#", "#\n#", "#\r\n#");
+      $replace_array = array('"', '', '', '\\n', '\\n');
+      $data = preg_replace($search_array,  $replace_array, $data);
+      $data = ltrim(rtrim($data, '"'), '"');
+      $data = $isevaled ? $data : ($data[0] === "'") ? $data : "'" . $data . "'";
+
+$js = <<<JSCODE
+\n<script>
+ // fallback - to deal with IE (or browsers that don't have console)
+ if (! window.console) console = {};
+ console.log = console.log || function(name, data){};
+ // end of fallback
+
+ console.log('$name');
+ console.log('------------------------------------------');
+ console.log('$type');
+ console.log($data);
+ console.log('\\n');
+</script>
+JSCODE;
+
+      echo $js;
+ } 
+
+?>
