@@ -229,12 +229,9 @@ fcn.treat2 <- function(gender, econ, mode, pair, v){
                      header =  c("Opci&oacuten", "Raz&oacuten Social", "Pensi&oacuten mensual en  pesos&dagger;", "P&eacuterdida anual&lowast;"),
                      caption=title,
                      tfoot="&dagger; Valor calculado en base a UF del d&iacutea 03/08/2018.
-                     &lowast; Las categor&iacuteas de Clasificaci&oacuten de Riesgo que permiten a las Compa&ntilde;&iacutea ofrecer
-                     Rentas Vitalicias son las siguientes AAA (mejor clasificaci&oacuten), AA, A, BBB (inferior). Cada una de estas categor&iacuteas 
-                     puede tener sub&iacutendices &quot;+&quot; o &quot;-&quot;, siendo el sub&iacutendice &quot;+&quot; mejor que el &quot;-&quot;.
-                     &lowast;&lowast; Monto que dejar&iacutea de ganar cada a&ntilde;o de vida.
+                     &lowast; Monto que dejar&iacutea de ganar cada a&ntilde;o de vida.
                      
-                     Para obtener mayor informaci&oacuten sobre la clasificaci&oacuten de riesgo de las compa&ntilde;ias de seguro haga click <a href='https://github.com/deniselaroze/Experimento-Metricas-y-Formatos-SCOMP/blob/master/Tratamientos/clasif_riesgo_csv.png' target='_blank'>aqui</a>",  
+                     Para obtener mayor informaci&oacuten sobre la clasificaci&oacuten de riesgo de las compa&ntilde;ias de seguro haga click <a href='http://cess.cl/wp-content/uploads/2016/05/clasif_riesgo_csv.png' target='_blank'>aqui</a>",  
                      file=paste0(path, "TreatV", v , QID ,".html"), 
                      css.cell = "padding-left: 0.5em; padding-right: 0.5em;",rnames=F
     )
@@ -368,7 +365,7 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
           panel.grid.major.x = element_blank(),
           panel.grid.major.y = element_line(colour = "Grey60", linetype = "dashed"))+
     geom_text(aes(label = paste0("$",point(val_pesos_pension)) , angle=90, size = 6, vjust = 0.4, hjust= -0.1)) +
-    geom_text(aes(label = paste("Opción", tbl$opcion, ":") ), size=5 , angle=90, vjust = 0.4, hjust= 1) +
+    geom_text(aes(label = paste("Opcion", tbl$opcion, ":") ), size=5 , angle=90, vjust = 0.4, hjust= 1) +
     coord_cartesian(ylim=c(min,max))  #coord_flip() +
   
   
@@ -412,12 +409,15 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
 #mode1Q<-"1"
 #mode2Q<-"3"
 #pgQ<-"1"
+#QID<-"6888" # to be replaced by a real Qualtrics ID code, unique to each participant
 
 genderQ<-args[1]   ## GÃÂÃÂ©nero
 econQ<-args[2]    ## SES
 mode1Q<-args[3] ## primera selecciÃÂÃÂ³n modalidad
 mode2Q<-args[4] ## segunda selecciÃÂÃÂ³n modalidad
 pgQ<-args[5]
+QID<-args[6]
+
 
 ### Adaptation from Qualtrics to R
 
@@ -454,7 +454,6 @@ pairvct<-sort(pairvct)
 
 pair<-paste0("co_", pairvct[1], pairvct[2])
 
-QID<-"qualtricsID" # to be replaced by a real Qualtrics ID code, unique to each participant
 
 
 #### list of treatment functions
