@@ -7,6 +7,7 @@ $econQ = getEcon();
 $mode1Q = getMode1Q();
 $mode2Q = getMode2Q();
 $pgQ = getPg();
+$idQ = getId();
 
 // execute R script from shell
 
@@ -15,9 +16,13 @@ $pgQ = getPg();
 #logConsole('mode1Q', $mode1Q, true);
 #logConsole('mode2Q', $mode2Q, true);
 #logConsole('pgQ', $pgQ, true);
+#logConsole('idQ', $idQ, true);
 
-$command = "Rscript /var/www/r.cess.cl/public_html/Treatment-Script.R $genderQ $econQ $mode1Q $mode2Q $pgQ";
+$command = "Rscript /var/www/r.cess.cl/public_html/Treatment-Script.R $genderQ $econQ $mode1Q $mode2Q $pgQ $idQ";
 $out = trim(shell_exec($command));
+
+#logConsole('out', $out, true);
+
 
 #echo(explode(',', $out));
 $pagos = explode(',', $out);
@@ -118,6 +123,19 @@ function getMode2Q(){
 function getPg(){
 	if(isset($_GET['pgQ'])){
 		$str = trim($_GET['pgQ']);
+		if(is_string($str)){
+			return $str;
+		}else{
+			return null;
+		}
+	}else{
+		return null;
+	}
+}
+
+function getId(){
+	if(isset($_GET['idQ'])){
+		$str = trim($_GET['idQ']);
 		if(is_string($str)){
 			return $str;
 		}else{
