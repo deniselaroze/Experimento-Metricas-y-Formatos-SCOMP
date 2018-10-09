@@ -32,9 +32,9 @@ library(purrr)
 path<-"~/GitHub/Experimento-Metricas-y-Formatos-SCOMP/Tratamientos/"
 
 
-load("C:/Users/Denise Laroze P/Dropbox/CESS-Santiago/archive/Pensions - JFF/Design info/certificados SP/nuevaBD.RData")
+#load("C:/Users/Denise Laroze P/Dropbox/CESS-Santiago/archive/Pensions - JFF/Design info/certificados SP/nuevaBD.RData")
 
-#load("C:/Users/Profesor/Dropbox/CESS-Santiago/archive/Pensions - JFF/Design info/Certificados SP final/nuevaBDfinal.RData")
+load("C:/Users/Denise Laroze P/Dropbox/CESS-Santiago/archive/Pensions - JFF/Design info/Certificados SP final/nuevaBDfinal.RData")
 
 
 #all.files$VPN<-all.files$val_pesos_pension*12*20
@@ -53,6 +53,68 @@ fcn.control <- function(gender, econ, mode, pair, v){
     id<-paste0(gender, econ, ".", mode, ".", pair)
     
     tbl<-all.files[all.files$id==id, c("razon_social", "val_uf_pension", "VPN")]
+    tbl<-tbl[order(-tbl$val_uf_pension),]
+    output <- numcolwise(prettyNum)(tbl, dec = ",")
+    output$val_uf_pension<-paste(output$val_uf_pension, "UF")
+    output<-cbind(tbl[,1], output[, 1])
+    op<-t(output)
+    
+    
+    return(
+      htmlTable(op, cgroup = c("Monto de pensi&oacute;n mensual durante el primer a&ntildeo"),
+                n.cgroup = c(nrow(tbl)),
+                header=paste("Opci&oacuten", 1:nrow(tbl)),
+                caption="Retiro Programado",
+                file=paste0(path, "TreatV", v , QID ,".html"), 
+                css.cell = "padding-left: 0.5em; padding-right: 0.5em;",rnames=F
+      )
+    )
+    
+    
+  }
+  
+  else {
+    
+    id<-paste0(gender, econ, ".", mode, ".", pair)
+    tbl<-all.files[all.files$id==id, c("razon_social", "val_uf_pension", "riesgo", "VPN")]
+    tbl<-tbl[order(-tbl$val_uf_pension),]
+    opcion <- seq.int(nrow(tbl))
+    tbl<-cbind(opcion, tbl)
+    output <- numcolwise(prettyNum)(tbl, dec = ",")
+    output<-cbind(output[,1], tbl[,2], output[, 2], tbl[,4])
+    
+    title<-if(grepl("1", mode)) {"Renta Vitalicia Inmediata"
+    } else if(grepl("2", mode))  {"Retiro Programado con Renta Vitalicia Diferida de 2 a&ntilde;os"
+    } else {"Retiro Programado con Renta Vitalicia Diferida de 4 a&ntilde;os"}
+    
+    
+    return(htmlTable(output,
+                     header =  c("Opci&oacuten", "Raz&oacuten Social", "Pensi&oacuten mensual en UF", "Clasificaci&oacuten de Riesgo <br>
+                               &nbsp; de la Compa&ntilde;&iacutea de Seguros&lowast;"),
+                     caption=title,
+                     tfoot="&lowast; Las categor&iacuteas de Clasificaci&oacuten de Riesgo que permiten a las Compa&ntilde;&iacutea ofrecer
+                   Rentas Vitalicias son las siguientes AAA (mejor clasificaci&oacuten), AA, A, BBB (inferior). Cada una de estas categor&iacuteas 
+                  puede tener sub&iacutendices &quot;+&quot; o &quot;-&quot;, siendo el sub&iacutendice &quot;+&quot; mejor que el &quot;-&quot;.",
+                     file=paste0(path, "TreatV", v , QID ,".html"), 
+                     css.cell = "padding-left: 2em; padding-right: 2em;",
+                     rnames=F
+    )
+    )
+  }
+  
+}
+
+###########################
+## Function - Control
+###########################
+fcn.control <- function(gender, econ, mode, pair, v){
+  
+  if (mode=="rp") {
+    
+    id<-paste0(gender, econ, ".", mode, ".", pair)
+    
+    tbl<-all.files[all.files$id==id, c("razon_social", "val_uf_pension", "VPN")]
+    tbl<-tbl[order(-tbl$val_uf_pension),]
     output <- numcolwise(prettyNum)(tbl, dec = ",")
     output$val_uf_pension<-paste(output$val_uf_pension, "UF")
     output<-cbind(tbl[,1], output[, 1])
@@ -87,15 +149,15 @@ fcn.control <- function(gender, econ, mode, pair, v){
     
     return(htmlTable(output,
                      header =  c("Opci&oacuten", "Raz&oacuten Social", "Pensi&oacuten mensual en UF", "Clasificaci&oacuten de Riesgo <br>
-                               &nbsp; de la Compa&ntilde;&iacutea de Seguros&lowast;"),
+                                 &nbsp; de la Compa&ntilde;&iacutea de Seguros&lowast;"),
                      caption=title,
                      tfoot="&lowast; Las categor&iacuteas de Clasificaci&oacuten de Riesgo que permiten a las Compa&ntilde;&iacutea ofrecer
-                   Rentas Vitalicias son las siguientes AAA (mejor clasificaci&oacuten), AA, A, BBB (inferior). Cada una de estas categor&iacuteas 
-                  puede tener sub&iacutendices &quot;+&quot; o &quot;-&quot;, siendo el sub&iacutendice &quot;+&quot; mejor que el &quot;-&quot;.",
+                     Rentas Vitalicias son las siguientes AAA (mejor clasificaci&oacuten), AA, A, BBB (inferior). Cada una de estas categor&iacuteas 
+                     puede tener sub&iacutendices &quot;+&quot; o &quot;-&quot;, siendo el sub&iacutendice &quot;+&quot; mejor que el &quot;-&quot;.",
                      file=paste0(path, "TreatV", v , QID ,".html"), 
                      css.cell = "padding-left: 2em; padding-right: 2em;",
                      rnames=F
-    )
+                     )
     )
   }
   
@@ -110,6 +172,7 @@ fcn.treat1 <- function(gender, econ, mode, pair, v){
   if (mode=="rp") {
     id<-paste0(gender, econ, ".", mode, ".", pair)
     tbl<-all.files[all.files$id==id, c("razon_social", "val_pesos_pension", "VPN")]
+    tbl<-tbl[order(-tbl$val_pesos_pension),]
     opcion <- seq.int(nrow(tbl))
     tbl<-cbind(opcion, tbl)
     tbl$val_pesos_pension<-round( tbl$val_pesos_pension, 0)
@@ -178,6 +241,7 @@ fcn.treat2 <- function(gender, econ, mode, pair, v){
     
     id<-paste0(gender, econ, ".", mode, ".", pair)
     tbl<-all.files[all.files$id==id, c("razon_social", "val_pesos_pension", "VPN")]
+    tbl<-tbl[order(-tbl$val_pesos_pension),]
     tbl$val_pesos_pension<-round( tbl$val_pesos_pension, 0)
     tbl$pesosDiff<- tbl$val_pesos_pension - max(tbl$val_pesos_pension)
     tbl$pesosDiff<-round( tbl$pesosDiff, 0)*12
@@ -197,7 +261,7 @@ fcn.treat2 <- function(gender, econ, mode, pair, v){
                      &lowast; Monto que dejar&iacutea de ganar el primero a&ntilde;o de pensi&oacuten.",
                      file=paste0(path, "TreatV", v , QID ,".html"), 
                      rnames=F
-                     )
+    )
     )   
     
     
@@ -229,12 +293,9 @@ fcn.treat2 <- function(gender, econ, mode, pair, v){
                      header =  c("Opci&oacuten", "Raz&oacuten Social", "Pensi&oacuten mensual en  pesos&dagger;", "P&eacuterdida anual&lowast;"),
                      caption=title,
                      tfoot="&dagger; Valor calculado en base a UF del d&iacutea 03/08/2018.
-                     &lowast; Las categor&iacuteas de Clasificaci&oacuten de Riesgo que permiten a las Compa&ntilde;&iacutea ofrecer
-                     Rentas Vitalicias son las siguientes AAA (mejor clasificaci&oacuten), AA, A, BBB (inferior). Cada una de estas categor&iacuteas 
-                     puede tener sub&iacutendices &quot;+&quot; o &quot;-&quot;, siendo el sub&iacutendice &quot;+&quot; mejor que el &quot;-&quot;.
-                     &lowast;&lowast; Monto que dejar&iacutea de ganar cada a&ntilde;o de vida.
-
-                     Para obtener mayor informaci&oacuten sobre la clasificaci&oacuten de riesgo de las compa&ntilde;ias de seguro haga click <a href='https://github.com/deniselaroze/Experimento-Metricas-y-Formatos-SCOMP/blob/master/Tratamientos/clasif_riesgo_csv.png' target='_blank'>aqui</a>",  
+                     &lowast; Monto que dejar&iacutea de ganar cada a&ntilde;o de vida.
+                     
+                     Para obtener mayor informaci&oacuten sobre la clasificaci&oacuten de riesgo de las compa&ntilde;ias de seguro haga click <a href='http://cess.cl/wp-content/uploads/2016/05/clasif_riesgo_csv.png' target='_blank'>aqui</a>",  
                      file=paste0(path, "TreatV", v , QID ,".html"), 
                      css.cell = "padding-left: 0.5em; padding-right: 0.5em;",rnames=F
     )
@@ -244,8 +305,7 @@ fcn.treat2 <- function(gender, econ, mode, pair, v){
 }
 
 
-
-  ##########################
+##########################
 ### Function - Treatment 3
 ##########################
 
@@ -254,6 +314,7 @@ fcn.treat3 <- function(gender, econ, mode, pair, v){
   if (mode=="rp") {
     id<-paste0(gender, econ, ".", mode, ".", pair)
     tbl<-all.files[all.files$id==id, c("razon_social", "val_pesos_pension", "VPN")]
+    tbl<-tbl[order(-tbl$VPN),]
     tbl$VPNDiff<- tbl$VPN - max(tbl$VPN)
     tbl$val_pesos_pension<-round( tbl$val_pesos_pension, 0)
     tbl$VPNDiff<-round( tbl$VPNDiff, 0)
@@ -264,7 +325,7 @@ fcn.treat3 <- function(gender, econ, mode, pair, v){
                                     decimal.mark = ",")
     output<-cbind(output[,1], tbl[,2], output[, c(2,3,4)])
     
-       return(htmlTable(output,
+    return(htmlTable(output,
                      header =  c("Opci&oacuten", "Raz&oacuten Social", "Pensi&oacuten mensual en pesos<br> durante el primer a&ntildeo&dagger;",  
                                  "Valor total estimado a recibir <br>(largo plazo)&lowast;", "P&eacuterdida total <br> estimada&lowast;&lowast;"),
                      caption="Retiro Programado",
@@ -303,9 +364,9 @@ fcn.treat3 <- function(gender, econ, mode, pair, v){
                                  "Valor total estimado a recibir <br>(largo plazo)&lowast;", "P&eacuterdida total <br> estimada&lowast;&lowast;"),
                      caption=title,
                      tfoot="&dagger; Valor calculado en base a UF del d&iacutea 03/08/2018.
-                    &lowast; Estimaci&oacuten del valor total de la oferta de pensi&oacuten, considerando esperanza de vida,
+                     &lowast; Estimaci&oacuten del valor total de la oferta de pensi&oacuten, considerando esperanza de vida,
                      riesgo de quiebra de la compa&ntilde;&iacutea de seguros y la tasa de descuento de los per&iacuteodos garantizados, si corresponde.
-                   &lowast;&lowast; Estimaci&oacuten del dinero que dejar&iacutea de percibir de no elegir la opci&oacuten 1.",
+                     &lowast;&lowast; Estimaci&oacuten del dinero que dejar&iacutea de percibir de no elegir la opci&oacuten 1.",
                      file=paste0(path, "TreatV", v , QID ,".html"), 
                      rnames=F
     )
@@ -324,11 +385,11 @@ fcn.treat3 <- function(gender, econ, mode, pair, v){
 
 #id<-"Fnivel4.1b.co_1brp"
 
-
 fcn.treat4 <- function(gender, econ, mode, pair, v){
   id<-paste0(gender, econ, ".", mode, ".", pair)
   
   tbl<-all.files[all.files$id==id, c("razon_social", "val_pesos_pension", "VPN")]
+  tbl<-tbl[order(-tbl$VPN),]
   tbl$val_pesos_pension<-round( tbl$val_pesos_pension, 0)
   opcion <- seq.int(nrow(tbl))
   tbl<-cbind(opcion, tbl)
@@ -342,8 +403,8 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
   point <- format_format(big.mark = ".", decimal.mark = ",", scientific = FALSE)
   
   title<-if(grepl("1", mode)) {"Renta Vitalicia Inmediata"
-  } else if(grepl("2", mode))  {"Retiro Programado con Renta Vitalicia Diferida de 2 años"
-  } else if(grepl("3", mode)) {"Retiro Programado con Renta Vitalicia Diferida de 4 años"
+  } else if(grepl("2", mode))  {"Retiro Programado con Renta Vitalicia Diferida de 2 a&ntilde;os"
+  } else if(grepl("3", mode)) {"Retiro Programado con Renta Vitalicia Diferida de 4 a&ntilde;os"
   } else {"Retiro Programado"
   }
   
@@ -361,7 +422,7 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
     theme(legend.position="") +
     scale_y_continuous(labels=function(x) format(x, big.mark = ".",decimal.mark=",",
                                                  scientific = FALSE)#,
-                       #                    sec.axis = sec_axis(~./240, name = "Pensión Mensual (pesos)", labels=function(x) format(x, big.mark = ".", decimal.mark = ",", scientific = FALSE))
+                       #                    sec.axis = sec_axis(~./240, name = "PensiÃƒÂƒÃ‚Â³n Mensual (pesos)", labels=function(x) format(x, big.mark = ".", decimal.mark = ",", scientific = FALSE))
     )+
     ylab(y_labels)  + xlab("")  +
     theme(axis.text.y=element_text(size=15 , angle=90),
@@ -370,22 +431,15 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
           panel.grid.major.x = element_blank(),
           panel.grid.major.y = element_line(colour = "Grey60", linetype = "dashed"))+
     geom_text(aes(label = paste0("$",point(val_pesos_pension)) , angle=90, size = 6, vjust = 0.4, hjust= -0.1)) +
-    geom_text(aes(label = paste("Opción", tbl$opcion, ":") ), size=5 , angle=90, vjust = 0.4, hjust= 1) +
+    geom_text(aes(label = paste("Opcion", tbl$opcion, ":") ), size=5 , angle=90, vjust = 0.4, hjust= 1) +
     coord_cartesian(ylim=c(min,max))  #coord_flip() +
- 
   
   
-  ggsave(paste0(path, "TreatV", v, QID ,".png"), width=25, height = 30, units = "cm")
   
-  p2 <- image_read(paste0(path, "TreatV", v, QID ,".png"))
+  return(ggsave(paste0(path, "TreatV", v, QID ,".png"), width=25, height = 30, units = "cm"))
   
-  return(image_rotate(p2, 90) %>% image_write(paste0(path, "TreatV", 1, QID ,".png"))) 
   
 }
-
-
-fcn.treat4("F", "nivel1", "3a", "co_3a3b", 1 )
-#fcn.treat4("F", "nivel4", "2a", "co_2arp" )
 
 ##################################
 ###### Generating treatments

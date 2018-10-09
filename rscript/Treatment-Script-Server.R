@@ -53,6 +53,7 @@ fcn.control <- function(gender, econ, mode, pair, v){
     id<-paste0(gender, econ, ".", mode, ".", pair)
     
     tbl<-all.files[all.files$id==id, c("razon_social", "val_uf_pension", "VPN")]
+    tbl<-tbl[order(-tbl$val_uf_pension),]
     output <- numcolwise(prettyNum)(tbl, dec = ",")
     output$val_uf_pension<-paste(output$val_uf_pension, "UF")
     output<-cbind(tbl[,1], output[, 1])
@@ -110,6 +111,7 @@ fcn.treat1 <- function(gender, econ, mode, pair, v){
   if (mode=="rp") {
     id<-paste0(gender, econ, ".", mode, ".", pair)
     tbl<-all.files[all.files$id==id, c("razon_social", "val_pesos_pension", "VPN")]
+    tbl<-tbl[order(-tbl$val_pesos_pension),]
     opcion <- seq.int(nrow(tbl))
     tbl<-cbind(opcion, tbl)
     tbl$val_pesos_pension<-round( tbl$val_pesos_pension, 0)
@@ -178,6 +180,7 @@ fcn.treat2 <- function(gender, econ, mode, pair, v){
     
     id<-paste0(gender, econ, ".", mode, ".", pair)
     tbl<-all.files[all.files$id==id, c("razon_social", "val_pesos_pension", "VPN")]
+    tbl<-tbl[order(-tbl$val_pesos_pension),]
     tbl$val_pesos_pension<-round( tbl$val_pesos_pension, 0)
     tbl$pesosDiff<- tbl$val_pesos_pension - max(tbl$val_pesos_pension)
     tbl$pesosDiff<-round( tbl$pesosDiff, 0)*12
@@ -250,6 +253,7 @@ fcn.treat3 <- function(gender, econ, mode, pair, v){
   if (mode=="rp") {
     id<-paste0(gender, econ, ".", mode, ".", pair)
     tbl<-all.files[all.files$id==id, c("razon_social", "val_pesos_pension", "VPN")]
+    tbl<-tbl[order(-tbl$VPN),]
     tbl$VPNDiff<- tbl$VPN - max(tbl$VPN)
     tbl$val_pesos_pension<-round( tbl$val_pesos_pension, 0)
     tbl$VPNDiff<-round( tbl$VPNDiff, 0)
@@ -324,6 +328,7 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
   id<-paste0(gender, econ, ".", mode, ".", pair)
   
   tbl<-all.files[all.files$id==id, c("razon_social", "val_pesos_pension", "VPN")]
+  tbl<-tbl[order(-tbl$VPN),]
   tbl$val_pesos_pension<-round( tbl$val_pesos_pension, 0)
   opcion <- seq.int(nrow(tbl))
   tbl<-cbind(opcion, tbl)
