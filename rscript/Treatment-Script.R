@@ -34,7 +34,7 @@ path<-"~/GitHub/Experimento-Metricas-y-Formatos-SCOMP/Tratamientos/"
 
 #load("C:/Users/Denise Laroze P/Dropbox/CESS-Santiago/archive/Pensions - JFF/Design info/certificados SP/nuevaBD.RData")
 
-load("C:/Users/Denise Laroze P/Dropbox/CESS-Santiago/archive/Pensions - JFF/Design info/Certificados SP final/nuevaBDfinal.RData")
+load("C:/Users/Denise Laroze Prehn/Dropbox/CESS-Santiago/archive/Pensions - JFF/Design info/Certificados SP final/nuevaBDfinal.RData")
 
 
 #all.files$VPN<-all.files$val_pesos_pension*12*20
@@ -450,18 +450,18 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
 
 
 
-#fcn.control("F", "nivel2", "1a", "co_1arp" )
+#fcn.control("F", "nivel1", "1a", "co_1arp", 1 )
 
-#fcn.treat1("F", "nivel2", "1a", "co_1arp" )
+#fcn.treat1("F", "nivel2", "1a", "co_1arp", 2 )
 
 
-fcn.treat2("F", "nivel2", "1a", "co_1arp", 1 )
+#fcn.treat2("F", "nivel3", "2a", "co_2arp", 3 )
 
-#fcn.treat3("F", "nivel2", "rp", "co_1arp", 2 )
+#fcn.treat3("F", "nivel4", "rp", "co_1arp", 4 )
 
-#fcn.treat4("M", "nivel4", "2a", "co_2a3a" )
+#fcn.treat4("M", "nivel4", "2a", "co_2a3a", 6 )
 
-fcn.treat4("F", "nivel1", "3a", "co_3a3b", 1 )
+#fcn.treat4("F", "nivel1", "rp", "co_3arp", 5 )
 
 
 #########################
