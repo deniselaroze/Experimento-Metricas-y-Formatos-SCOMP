@@ -1,12 +1,12 @@
 ################################################ 
 ### Data Management for Excel SP
-### Jul 2018
+### Oct 2018
 ### Denise Laroze / Mlopez
 ################################################
 
 args <- commandArgs(TRUE)
 
-#No incluir el llamado a librerias individuales, sino la carpeta donde estÃÂÃÂ¡n instaladas
+#No incluir el llamado a librerias individuales, sino la carpeta donde estan instaladas
 .libPaths=("/usr/lib64/R/library/")
 
 require(plyr)
@@ -30,8 +30,9 @@ require(magick,  warn.conflicts = FALSE, quietly = TRUE)
 setwd("/var/www/r.cess.cl/public_html/")
 
 #Parameters
-pesouf<-27205.11 ### 3 de agosto de 2018
+#pesouf<-27205.11 ### 3 de agosto de 2018
 path<-"/var/www/r.cess.cl/public_html/sp/"
+#path<-"~/GitHub/Experimento-Metricas-y-Formatos-SCOMP/Tratamientos/"
 
 
 load("/var/www/r.cess.cl/public_html/sp/nuevaBDfinal.RData")
@@ -267,8 +268,8 @@ fcn.treat3 <- function(gender, econ, mode, pair, v){
                                  "Valor total estimado a recibir <br>(largo plazo)&lowast;", "P&eacuterdida total <br> estimada&lowast;&lowast;"),
                      caption="Retiro Programado",
                      tfoot="&dagger; Valor calculado en base a UF del d&iacutea 03/08/2018.
-                     &lowast; Estimaci&oacuten del valor total de la oferta de pensi&oacuten, considerando esperanza de vida,
-                     riesgo de quiebra de la compa&ntilde;&iacutea de seguros y la tasa de descuento de los per&iacuteodos garantizados, si corresponde. 
+                     &lowast; Estimaci&oacuten del valor total de la oferta de pensi&oacuten, considerando esperanza de vida y las
+                     distintas comisiones que cobran las AFP por el retiro programado. 
                      &lowast;&lowast; Estimaci&oacuten del dinero que dejar&iacutea de percibir de no elegir la opci&oacuten 1.",
                      file=paste0(path, "TreatV", v , QID ,".html"), 
                      rnames=F
@@ -359,7 +360,7 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
     theme(legend.position="") +
     scale_y_continuous(labels=function(x) format(x, big.mark = ".",decimal.mark=",",
                                                  scientific = FALSE)#,
-                       #                    sec.axis = sec_axis(~./240, name = "PensiÃÂ³n Mensual (pesos)", labels=function(x) format(x, big.mark = ".", decimal.mark = ",", scientific = FALSE))
+                       #                    sec.axis = sec_axis(~./240, name = "Pension Mensual (pesos)", labels=function(x) format(x, big.mark = ".", decimal.mark = ",", scientific = FALSE))
     )+
     ylab(y_labels)  + xlab("")  +
     theme(axis.text.y=element_text(size=15 , angle=90),
@@ -367,7 +368,7 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
           axis.text.x=element_text(size=15, angle=90),
           panel.grid.major.x = element_blank(),
           panel.grid.major.y = element_line(colour = "Grey60", linetype = "dashed"))+
-    geom_text(aes(label = paste0("$",point(val_pesos_pension)) , angle=90, size = 6, vjust = 0.4, hjust= -0.1)) +
+    geom_text(aes(label = paste0("$",point(val_pesos_pension), " mensuales") , angle=90, size = 6, vjust = 0.4, hjust= -0.1)) +
     geom_text(aes(label = paste("Opcion", tbl$opcion, ":") ), size=5 , angle=90, vjust = 0.4, hjust= 1) +
     coord_cartesian(ylim=c(min,max))  #coord_flip() +
   
@@ -388,17 +389,17 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
 # Manual treatment generation, for testing
 #QID<-"qualtricsID"
 
-#fcn.control("F", "nivel2", "1a", "co_1arp" )
+#fcn.control("F", "nivel2", "1a", "co_1arp", 1 )
 
-#fcn.treat1("F", "nivel2", "1a", "co_1arp" )
+#fcn.treat1("F", "nivel2", "1a", "co_1arp", 2 )
 
-#fcn.treat2("F", "nivel2", "1a", "co_1arp" )
+#fcn.treat2("F", "nivel2", "1a", "co_1arp", 3 )
 
-#fcn.treat3("F", "nivel2", "rp", "co_1arp" )
+#fcn.treat3("F", "nivel2", "rp", "co_1arp", 4 )
 
-#fcn.treat4("M", "nivel4", "2a", "co_2a3a" )
+#fcn.treat4("F", "nivel2", "1a", "co_1arp", 5 )
 
-#fcn.treat4("F", "nivel1", "3a", "co_3a3b" )
+#fcn.treat4("F", "nivel1", "rp", "co_1arp", 6 )
 
 
 #########################
@@ -414,10 +415,10 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
 #pgQ<-"1"
 #QID<-"6888" # to be replaced by a real Qualtrics ID code, unique to each participant
 
-genderQ<-args[1]   ## GÃÂÃÂ©nero
+genderQ<-args[1]   ## Genero
 econQ<-args[2]    ## SES
-mode1Q<-args[3] ## primera selecciÃÂÃÂ³n modalidad
-mode2Q<-args[4] ## segunda selecciÃÂÃÂ³n modalidad
+mode1Q<-args[3] ## primera seleccion modalidad
+mode2Q<-args[4] ## segunda seleccion modalidad
 pgQ<-args[5]
 QID<-args[6]
 

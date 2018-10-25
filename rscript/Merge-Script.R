@@ -84,8 +84,21 @@ all.files$val_uf_pension<-ifelse(is.na(all.files$val_uf_pension_net), all.files$
 all.files$val_pesos_pension<-all.files$val_uf_pension*pesouf
 
 all.files$VPN<-all.files$vpe_fne*pesouf
-## Genero nuevo archivo con los cambios
 
+## Ajustar nombres compañias para incorporar espacios en blanco
+all.files$razon_social<-all.files$razon_social
+all.files$razon_social<-gsub("(AFP)([[:upper:]])", "\\1 \\2", all.files$razon_social)
+all.files$razon_social<-gsub("([[:upper:]])(VIDA)", "\\1 \\2", all.files$razon_social)
+all.files$razon_social<-gsub("(BTG)([[:upper:]])", "\\1 \\2", all.files$razon_social)
+all.files$razon_social<-gsub("([[:upper:]])(NATIONAL)", "\\1 \\2", all.files$razon_social)
+all.files$razon_social<-gsub("([[:upper:]])(NACIONAL)", "\\1 \\2", all.files$razon_social)
+
+all.files$razon_social[all.files$razon_social=="AFP PRO VIDA"]<-"AFP PROVIDA"
+all.files$razon_social[all.files$razon_social=="CHILENACONSOLIDADA"]<-"CHILENA CONSOLIDADA"
+all.files$razon_social[all.files$razon_social=="CNLIFE"]<-"CN LIFE"
+
+
+## Genero nuevo archivo con los cambios
 save(all.files, file = "nuevaBDfinal.RData")
 
 #################### End merge #####################################
