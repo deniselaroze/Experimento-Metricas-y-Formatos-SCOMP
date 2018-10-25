@@ -232,9 +232,7 @@ fcn.treat2 <- function(gender, econ, mode, pair, v){
                      header =  c("Opci&oacuten", "Raz&oacuten Social", "Pensi&oacuten mensual en  pesos&dagger;", "P&eacuterdida anual&lowast;"),
                      caption=title,
                      tfoot="&dagger; Valor calculado en base a UF del d&iacutea 03/08/2018.
-                     &lowast; Monto que dejar&iacutea de ganar cada a&ntilde;o de vida.
-                     
-                     Para obtener mayor informaci&oacuten sobre la clasificaci&oacuten de riesgo de las compa&ntilde;ias de seguro haga click <a href='http://cess.cl/wp-content/uploads/2016/05/clasif_riesgo_csv.png' target='_blank'>aqui</a>",  
+                     &lowast; Monto que dejar&iacutea de ganar cada a&ntilde;o de vida.",
                      file=paste0(path, "TreatV", v , QID ,".html"), 
                      css.cell = "padding-left: 0.5em; padding-right: 0.5em;",rnames=F
     )
@@ -463,7 +461,7 @@ pair<-paste0("co_", pairvct[1], pairvct[2])
 
 #### list of treatment functions
 namedVF<-list(control=fcn.control, treat1=fcn.treat1, treat2=fcn.treat2, treat3=fcn.treat3, treat4=fcn.treat4  )
-#namedVF<-list(control=fcn.treat4, treat1=fcn.treat4, treat2=fcn.treat4, treat3=fcn.treat4, treat4=fcn.treat4 )
+#namedVF<-list(treat2=fcn.treat2, treat2=fcn.treat2, treat2=fcn.treat2, treat2=fcn.treat2, treat2=fcn.treat2 )
 
 #### Random selection of treatment without replacement
 selected<-sample(namedVF, 2, replace=FALSE)
