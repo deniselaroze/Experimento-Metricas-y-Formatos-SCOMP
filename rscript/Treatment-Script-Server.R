@@ -83,8 +83,8 @@ fcn.control <- function(gender, econ, mode, pair, v){
     output<-cbind(output[,1], tbl[,2], output[, 2], tbl[,4])
     
     title<-if(grepl("1", mode)) {"Renta Vitalicia Inmediata"
-    } else if(grepl("2", mode))  {"Retiro Programado con Renta Vitalicia Diferida de 2 a&ntilde;os"
-    } else {"Retiro Programado con Renta Vitalicia Diferida de 4 a&ntilde;os"}
+    } else if(grepl("2", mode))  {"Renta Temporal con Renta Vitalicia Diferida de 2 a&ntilde;os"
+    } else {"Renta Temporal con Renta Vitalicia Diferida de 4 a&ntilde;os"}
     
     
     return(htmlTable(output,
@@ -146,8 +146,8 @@ fcn.treat1 <- function(gender, econ, mode, pair, v){
                                     decimal.mark = ",")
     output<-cbind(output[,1], tbl[,2], output[, 2], tbl[,4])
     title<-if(grepl("1", mode)) {"Renta Vitalicia Inmediata"
-    } else if(grepl("2", mode))  {"Retiro Programado con Renta Vitalicia Diferida de 2 a&ntilde;os"
-    } else {"Retiro Programado con Renta Vitalicia Diferida de 4 a&ntilde;os"}
+    } else if(grepl("2", mode))  {"Renta Temporal con Renta Vitalicia Diferida de 2 a&ntilde;os"
+    } else {"Renta Temporal con Renta Vitalicia Diferida de 4 a&ntilde;os"}
     
     return(htmlTable(output,
                      header =  c("Opci&oacuten", "Raz&oacuten Social", "Pensi&oacuten mensual en pesos&dagger;", "&nbsp; Clasificaci&oacuten de Riesgo <br>
@@ -226,8 +226,8 @@ fcn.treat2 <- function(gender, econ, mode, pair, v){
     output<-cbind(output[,1], tbl[,2], output[, c(2,4)])
     
     title<-if(grepl("1", mode)) {"Renta Vitalicia Inmediata"
-    } else if(grepl("2", mode))  {"Retiro Programado con Renta Vitalicia Diferida de 2 a&ntilde;os"
-    } else {"Retiro Programado con Renta Vitalicia Diferida de 4 a&ntilde;os"}
+    } else if(grepl("2", mode))  {"Renta Temporal con Renta Vitalicia Diferida de 2 a&ntilde;os"
+    } else {"Renta Temporal con Renta Vitalicia Diferida de 4 a&ntilde;os"}
     
     return(htmlTable(output,
                      header =  c("Opci&oacuten", "Raz&oacuten Social", "Pensi&oacuten mensual en  pesos&dagger;", "P&eacuterdida anual&lowast;"),
@@ -292,8 +292,8 @@ fcn.treat3 <- function(gender, econ, mode, pair, v){
     output<-cbind(output[,1], tbl[,2], output[, c(2,3,4)])
     
     title<-if(grepl("1", mode)) {"Renta Vitalicia Inmediata"
-    } else if(grepl("2", mode))  {"Retiro Programado con Renta Vitalicia Diferida de 2 a&ntilde;os"
-    } else {"Retiro Programado con Renta Vitalicia Diferida de 4 a&ntilde;os"}
+    } else if(grepl("2", mode))  {"Renta Temporal con Renta Vitalicia Diferida de 2 a&ntilde;os"
+    } else {"Renta Temporal con Renta Vitalicia Diferida de 4 a&ntilde;os"}
     
     
     
@@ -341,8 +341,8 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
   point <- format_format(big.mark = ".", decimal.mark = ",", scientific = FALSE)
   
   title<-if(grepl("1", mode)) {"Renta Vitalicia Inmediata"
-  } else if(grepl("2", mode))  {"Retiro Programado con Renta Vitalicia Diferida de 2 a&ntilde;os"
-  } else if(grepl("3", mode)) {"Retiro Programado con Renta Vitalicia Diferida de 4 a&ntilde;os"
+  } else if(grepl("2", mode))  {"Renta Temporal con Renta Vitalicia Diferida de 2 a&ntilde;os"
+  } else if(grepl("3", mode)) {"Renta Temporal con Renta Vitalicia Diferida de 4 a&ntilde;os"
   } else {"Retiro Programado"
   }
   
