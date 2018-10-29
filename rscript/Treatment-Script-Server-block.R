@@ -21,9 +21,9 @@ require(htmlTable)
 require(grid)
 require(forcats)
 require(pacman)
-pacman::p_load(ggplot2, extrafont, scales)
+pacman::p_load(extrafont)
 require(purrr, warn.conflicts = FALSE, quietly = TRUE)
-require(magick,  warn.conflicts = FALSE, quietly = TRUE)
+#require(magick,  warn.conflicts = FALSE, quietly = TRUE)
 require(scales)
 #require(OpenImageR)
 
@@ -53,7 +53,7 @@ if(length(args) != 6){
 }
 
 # Load data
-load(file="/sp/new.RData")
+load(file="/var/www/r.cess.cl/public_html/sp/new.RData")
 
 qid = args[6]
 if(sum(part.data$QID %in% qid)>0){
