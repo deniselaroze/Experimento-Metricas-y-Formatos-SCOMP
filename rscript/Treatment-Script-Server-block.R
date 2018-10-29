@@ -42,8 +42,8 @@ if(args[6] == "reset_database"){
   time <- gsub("[:alph:]", "", time)
   time <- gsub(" ", "_", time)
   
-  file.copy("new.RData", sprintf("rdata_bak_%s.Rdata", time))
-  file.copy("new_orig.RData", "new.RData", overwrite = T)
+  file.copy("/sp/new.RData", sprintf("rdata_bak_%s.Rdata", time))
+  file.copy("/sp/new_orig.RData", "new.RData", overwrite = T)
   stop()
 }
 
