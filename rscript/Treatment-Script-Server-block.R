@@ -53,7 +53,7 @@ if(length(args) != 6){
 }
 
 # Load data
-load(file="new.RData")
+load(file="/sp/new.RData")
 
 qid = args[6]
 if(sum(part.data$QID %in% qid)>0){
@@ -79,7 +79,7 @@ if(sum(part.data$QID %in% qid)>0){
   tr <- bdata$x$Tr[length(bdata$x$Tr)]
  
   # Save data
-  save(mahal,seqblock1,seqblock2k,bdata,part.data,file="new.RData")
+  save(mahal,seqblock1,seqblock2k,bdata,part.data,file="/sp/new.RData")
 }
 
 tr<-strsplit(tr,split = ",")[[1]]
