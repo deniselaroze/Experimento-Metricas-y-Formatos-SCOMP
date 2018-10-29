@@ -42,8 +42,8 @@ if(args[6] == "reset_database"){
   time <- gsub("[:alph:]", "", time)
   time <- gsub(" ", "_", time)
   
-  file.copy("/sp/new.RData", sprintf("rdata_bak_%s.Rdata", time))
-  file.copy("/sp/new_orig.RData", "new.RData", overwrite = T)
+  file.copy("/var/www/r.cess.cl/public_html/sp/new.RData", sprintf("rdata_bak_%s.Rdata", time))
+  file.copy("/var/www/r.cess.cl/public_html/sp/new_orig.RData", "new.RData", overwrite = T)
   stop()
 }
 
@@ -79,7 +79,7 @@ if(sum(part.data$QID %in% qid)>0){
   tr <- bdata$x$Tr[length(bdata$x$Tr)]
  
   # Save data
-  save(mahal,seqblock1,seqblock2k,bdata,part.data,file="/sp/new.RData")
+  save(mahal,seqblock1,seqblock2k,bdata,part.data,file="/var/www/r.cess.cl/public_html/sp/new.RData")
 }
 
 tr<-strsplit(tr,split = ",")[[1]]
