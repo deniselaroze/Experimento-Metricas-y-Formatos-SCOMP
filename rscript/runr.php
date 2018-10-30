@@ -18,14 +18,16 @@ $idQ = getId();
 #logConsole('pgQ', $pgQ, true);
 #logConsole('idQ', $idQ, true);
 
-$command = "Rscript /var/www/r.cess.cl/public_html/Treatment-Script.R $genderQ $econQ $mode1Q $mode2Q $pgQ $idQ";
+$command = "Rscript /var/www/r.cess.cl/public_html/Treatment-Script-Server-block.R $genderQ $econQ $mode1Q $mode2Q $pgQ $idQ";
 $out = trim(shell_exec($command));
 
-#logConsole('out', $out, true);
+
 
 
 #echo(explode(',', $out));
 $pagos = explode(',', $out);
+
+#logConsole('pagos', $pagos, true);
 
 
 #header('Content-Type: application/json');
