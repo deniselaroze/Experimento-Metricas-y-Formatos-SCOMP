@@ -21,7 +21,7 @@ require(htmlTable)
 require(grid)
 require(forcats)
 require(pacman)
-pacman::p_load(extrafont)
+pacman::p_load(ggplot2, extrafont, scales)
 require(purrr, warn.conflicts = FALSE, quietly = TRUE)
 #require(magick,  warn.conflicts = FALSE, quietly = TRUE)
 require(scales)
@@ -55,11 +55,12 @@ if(length(args) != 6){
 # Load data
 load(file="/var/www/r.cess.cl/public_html/sp/new.RData")
 
-qid = args[6]
-if(sum(part.data$QID %in% qid)>0){
+QID = args[6]
+
+if(sum(part.data$QID %in% QID)>0){
   # Retuen value to PHP via stdout
-  tr <- bdata$x$Tr[which(bdata$x$QID==qid)[1]]
-   
+  tr <- bdata$x$Tr[which(bdata$x$QID==QID)[1]]
+  
 } else {
   # update the data.frame
   part.data <- rbind(part.data, 
@@ -69,21 +70,22 @@ if(sum(part.data$QID %in% qid)>0){
                                 mode1Q=as.numeric(args[3])+rnorm(1,sd=.001),
                                 mode2Q=as.numeric(args[4])+rnorm(1,sd=.001),
                                 pgQ=as.numeric(args[5])+rnorm(1,sd=.001)))
-  # update the seqblock objects
+ 
+   # update the seqblock objects
   n.idx <- nrow(part.data)
   bdata <- seqblock2k(object.name = "bdata", 
-                        id.vals = part.data[n.idx, "QID"],  
-                        covar.vals = part.data[n.idx,-c(1)], 
-                        verbose = FALSE)
+                      id.vals = part.data[n.idx, "QID"],  
+                      covar.vals = part.data[n.idx,-c(1)], 
+                      verbose = FALSE)
   
   tr <- bdata$x$Tr[length(bdata$x$Tr)]
- 
+  
   # Save data
   save(mahal,seqblock1,seqblock2k,bdata,part.data,file="/var/www/r.cess.cl/public_html/sp/new.RData")
 }
 
 tr<-strsplit(tr,split = ",")[[1]]
-
+tr<-as.numeric(tr)
 
 load("/var/www/r.cess.cl/public_html/sp/nuevaBDfinal.RData")
 
@@ -460,15 +462,18 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
 # Simulation data that would come from Qualtrics
 # mode1Q<-"1"
 # mode2Q<-"3"
-# gender<-"F"
-# econ<-"nivel1"
-#pg<-"b"
+# genderQ<-"2"
+# econQ<-"3"
+# pgQ<-"2"
 
 genderQ<-args[1]   ## GÃÂ©nero
+
 econQ<-args[2]    ## SES
 mode1Q<-args[3] ## primera selecciÃÂ³n modalidad
 mode2Q<-args[4] ## segunda selecciÃÂ³n modalidad
 pgQ<-args[5]
+QID <- args[6]
+
 
 ### Adaptation from Qualtrics to R
 gender<-if(genderQ=="1") "M" else "F"
@@ -503,7 +508,7 @@ pairvct<-sort(pairvct)
 
 pair<-paste0("co_", pairvct[1], pairvct[2])
 
-QID<-"qualtricsID" # to be replaced by a real Qualtrics ID code, unique to each participant
+#QID<-"654987987" # to be replaced by a real Qualtrics ID code, unique to each participant
 
 
 #### list of treatment functions
@@ -516,9 +521,9 @@ selected<-c(namedVF[tr[1]],namedVF[tr[2]])
 selectedQID<-names(selected) ## list of selected treatments to send to Qualtrics
 
 
-
 ### executing treatments
 selected[[1]](gender, econ, pairvct[1], pair, v=1)
+
 selected[[2]](gender, econ, pairvct[2], pair, v=2)
 
 #selectedQID<-list("treat1", "treat4")
