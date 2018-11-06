@@ -34,7 +34,7 @@ path<-"~/GitHub/Experimento-Metricas-y-Formatos-SCOMP/Tratamientos/"
 
 #load("C:/Users/Denise Laroze P/Dropbox/CESS-Santiago/archive/Pensions - JFF/Design info/certificados SP/nuevaBD.RData")
 
-load("C:/Users/Denise Laroze Prehn/Dropbox/CESS-Santiago/archive/Pensions - JFF/Design info/Certificados SP final/nuevaBDfinal.RData")
+load("C:/Users/Denise Laroze P/Dropbox/CESS-Santiago/archive/Pensions/Pensions - JFF/Design info/Certificados SP final/nuevaBDfinal.RData")
 
 
 #all.files$VPN<-all.files$val_pesos_pension*12*20
@@ -385,6 +385,12 @@ fcn.treat3 <- function(gender, econ, mode, pair, v){
 
 #id<-"Fnivel4.1b.co_1brp"
 
+##########################
+### Function - Treatment 4 
+##########################
+
+#id<-"Fnivel4.1b.co_1brp"
+
 fcn.treat4 <- function(gender, econ, mode, pair, v){
   id<-paste0(gender, econ, ".", mode, ".", pair)
   
@@ -403,8 +409,8 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
   point <- format_format(big.mark = ".", decimal.mark = ",", scientific = FALSE)
   
   title<-if(grepl("1", mode)) {"Renta Vitalicia Inmediata"
-  } else if(grepl("2", mode))  {"Retiro Programado con Renta Vitalicia Diferida de 2 a&ntilde;os"
-  } else if(grepl("3", mode)) {"Retiro Programado con Renta Vitalicia Diferida de 4 a&ntilde;os"
+  } else if(grepl("2", mode))  {"Renta Temporal con Renta Vitalicia Diferida de 2 a�os"
+  } else if(grepl("3", mode)) {"Renta Temporal con Renta Vitalicia Diferida de 4 a�os"
   } else {"Retiro Programado"
   }
   
@@ -422,7 +428,7 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
     theme(legend.position="") +
     scale_y_continuous(labels=function(x) format(x, big.mark = ".",decimal.mark=",",
                                                  scientific = FALSE)#,
-                       #                    sec.axis = sec_axis(~./240, name = "PensiÃÂ³n Mensual (pesos)", labels=function(x) format(x, big.mark = ".", decimal.mark = ",", scientific = FALSE))
+                       #                    sec.axis = sec_axis(~./240, name = "Pension Mensual (pesos)", labels=function(x) format(x, big.mark = ".", decimal.mark = ",", scientific = FALSE))
     )+
     ylab(y_labels)  + xlab("")  +
     theme(axis.text.y=element_text(size=15 , angle=90),
@@ -430,16 +436,20 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
           axis.text.x=element_text(size=15, angle=90),
           panel.grid.major.x = element_blank(),
           panel.grid.major.y = element_line(colour = "Grey60", linetype = "dashed"))+
-    geom_text(aes(label = paste0("$",point(val_pesos_pension)) , angle=90, size = 6, vjust = 0.4, hjust= -0.1)) +
-    geom_text(aes(label = paste("Opcion", tbl$opcion, ":") ), size=5 , angle=90, vjust = 0.4, hjust= 1) +
+    geom_text(aes(label = paste0("$",point(val_pesos_pension), " mensuales") , angle=90, size = 6, vjust = 0.4, hjust= -0.1)) +
+    geom_text(aes(label = paste("Opcion", tbl$opcion, ":") ), size=5 , angle=90, vjust = 0.4, hjust= 1, colour = "lavender", fontface = "bold") +
     coord_cartesian(ylim=c(min,max))  #coord_flip() +
   
   
   
-  return(ggsave(paste0(path, "TreatV", v, QID ,".png"), width=25, height = 30, units = "cm"))
+  return(ggsave(paste0(path, "TreatV", v, QID ,".png"), width=30, height = 30, units = "cm"))
   
   
 }
+
+
+#fcn.treat4("F", "nivel4", "2a", "co_2arp" )
+
 
 ##################################
 ###### Generating treatments
@@ -461,7 +471,7 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
 
 #fcn.treat4("M", "nivel4", "2a", "co_2a3a", 6 )
 
-#fcn.treat4("F", "nivel1", "rp", "co_3arp", 5 )
+fcn.treat4("F", "nivel1", "3a", "co_3arp", 8 )
 
 
 #########################
