@@ -6,7 +6,7 @@
 
 args <- commandArgs(TRUE)
 
-#No incluir el llamado a librerias individuales, sino la carpeta donde estÃÂ¡n instaladas
+#No incluir el llamado a librerias individuales, sino la carpeta donde estÃÂÃÂ¡n instaladas
 .libPaths=("/usr/lib64/R/library/")
 
 require(plyr)
@@ -393,8 +393,8 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
   point <- format_format(big.mark = ".", decimal.mark = ",", scientific = FALSE)
   
   title<-if(grepl("1", mode)) {"Renta Vitalicia Inmediata"
-  } else if(grepl("2", mode))  {"Renta Temporal con Renta Vitalicia Diferida de 2 a&ntilde;os"
-  } else if(grepl("3", mode)) {"Renta Temporal con Renta Vitalicia Diferida de 4 a&ntilde;os"
+  } else if(grepl("2", mode))  {"Renta Temporal con Renta Vitalicia Diferida de 2 años"
+  } else if(grepl("3", mode)) {"Renta Temporal con Renta Vitalicia Diferida de 4 años"
   } else {"Retiro Programado"
   }
   
@@ -421,7 +421,7 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
           panel.grid.major.x = element_blank(),
           panel.grid.major.y = element_line(colour = "Grey60", linetype = "dashed"))+
     geom_text(aes(label = paste0("$",point(val_pesos_pension), " mensuales") , angle=90, size = 6, vjust = 0.4, hjust= -0.1)) +
-    geom_text(aes(label = paste("Opcion", tbl$opcion, ":") ), size=5 , angle=90, vjust = 0.4, hjust= 1) +
+    geom_text(aes(label = paste("Opción", tbl$opcion, ":") ), size=5 , angle=90, vjust = 0.4, hjust= 1,colour = "lavender", fontface = "bold") +
     coord_cartesian(ylim=c(min,max))  #coord_flip() +
   
   
@@ -466,11 +466,11 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
 # econQ<-"3"
 # pgQ<-"2"
 
-genderQ<-args[1]   ## GÃÂ©nero
+genderQ<-args[1]   ## GÃÂÃÂ©nero
 
 econQ<-args[2]    ## SES
-mode1Q<-args[3] ## primera selecciÃÂ³n modalidad
-mode2Q<-args[4] ## segunda selecciÃÂ³n modalidad
+mode1Q<-args[3] ## primera selecciÃÂÃÂ³n modalidad
+mode2Q<-args[4] ## segunda selecciÃÂÃÂ³n modalidad
 pgQ<-args[5]
 QID <- args[6]
 
