@@ -466,11 +466,11 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
 # econQ<-"3"
 # pgQ<-"2"
 
-genderQ<-args[1]   ## GÃÂÃÂ©nero
+genderQ<-args[1]   ## Genero
 
 econQ<-args[2]    ## SES
-mode1Q<-args[3] ## primera selecciÃÂÃÂ³n modalidad
-mode2Q<-args[4] ## segunda selecciÃÂÃÂ³n modalidad
+mode1Q<-args[3] ## primera seleccion modalidad
+mode2Q<-args[4] ## segunda seleccion modalidad
 pgQ<-args[5]
 QID <- args[6]
 
@@ -526,25 +526,27 @@ selected[[1]](gender, econ, pairvct[1], pair, v=1)
 
 selected[[2]](gender, econ, pairvct[2], pair, v=2)
 
-#selectedQID<-list("treat1", "treat4")
-#if ("treat4" %in% selectedQID){
-#  p2 <- image_read(paste0("TreatV", 1, QID ,".png"))
-#  image_rotate(p2, 90) %>% image_write(paste0("TreatVRotate", 1, QID ,".png")) 
-#} else {""}
-
 
 #### Payment lists for treatments
 
-fcn.payment <- function(gender, econ, mode, pair){
+fcn.payment <- function(gender, econ, mode, pair, selectedTreat){
   id<-paste0(gender, econ, ".", mode, ".", pair)
   
-  payment<-all.files[all.files$id==id, c("razon_social" ,"VPN")]
+  payment<-all.files[all.files$id==id, c("razon_social", "val_uf_pension", "val_pesos_pension" ,"VPN")]
   
   mn<-15-nrow(payment)
   
   payment[nrow(payment)+mn,] <- NA
   
+  # treatment if condition for payment$opcion  order
+  payment<-if(selectedTreat=="control") {payment[order(-payment$val_uf_pension),]
+  } else if (selectedTreat=="treat1") { payment[order(-payment$val_pesos_pension),]
+  } else if (selectedTreat=="treat2") { payment[order(-payment$val_pesos_pension),]
+  } else if (selectedTreat=="treat3") { payment[order(-payment$VPN),]
+          } else {payment[order(-payment$VPN),]}
+              
   payment$opcion<-1:15
+  
   payment$VPN<-ifelse(is.na(payment$VPN), 0, payment$VPN )
   
   n <- 15
@@ -566,9 +568,22 @@ fcn.payment <- function(gender, econ, mode, pair){
   return(pay.list)
 }
 
-pay.op1<-fcn.payment(gender, econ, pairvct[1], pair)
-pay.op2<-fcn.payment(gender, econ, pairvct[2], pair)
+pay.op1<-fcn.payment(gender, econ, pairvct[1], pair, selectedQID[1])
 
+pay.op2<-fcn.payment(gender, econ, pairvct[2], pair, selectedQID[2])
+
+
+### Largo Opciones por tratamiento
+fcn.opcion <- function(gender, econ, mode, pair, selectedTreat){
+  id<-paste0(gender, econ, ".", mode, ".", pair)
+  
+  tbl<-all.files[all.files$id==id, c("razon_social", "VPN")]
+  length<-nrow(tbl)
+  return(length)
+}
+
+length1<-fcn.opcion(gender, econ, pairvct[1], pair)
+length2<-fcn.opcion(gender, econ, pairvct[2], pair)
 
 
 #envio de datos a qualtrics
