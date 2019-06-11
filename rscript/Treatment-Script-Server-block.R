@@ -454,9 +454,9 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
 #fcn.treat4("F", "nivel1", "3a", "co_3a3b" )
 
 
-#########################
-### Random asignment
-#########################
+###############################
+### Incorporate Qualtrics data
+###############################
 
 
 # Simulation data that would come from Qualtrics
@@ -516,7 +516,7 @@ pair<-paste0("co_", pairvct[1], pairvct[2])
 namedVF<-list(control=fcn.control, treat1=fcn.treat1, treat2=fcn.treat2, treat3=fcn.treat3, treat4=fcn.treat4  )
 #namedVF<-list(control=fcn.treat4, treat1=fcn.treat4, treat2=fcn.treat4, treat3=fcn.treat4, treat4=fcn.treat4 )
 
-#### Random selection of treatment without replacement
+#### use treatments "tr" vector selected in block randomization at the beginning of the script
 selected<-c(namedVF[tr[1]],namedVF[tr[2]])
 selectedQID<-names(selected) ## list of selected treatments to send to Qualtrics
 
