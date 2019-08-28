@@ -66,12 +66,8 @@ if(sum(part.data$QID %in% QID)>0){
   part.data <- rbind(part.data, 
                      data.frame(QID=args[6], 
                                 genderQ=as.numeric(args[1])+rnorm(1,sd=.001),
-                                econQ=as.numeric(args[2])+rnorm(1,sd=.001), 
-                                mode1Q=as.numeric(args[3])+rnorm(1,sd=.001),
-                                mode2Q=as.numeric(args[4])+rnorm(1,sd=.001),
-                                pgQ=as.numeric(args[5])+rnorm(1,sd=.001)))
- 
-   # update the seqblock objects
+                                econQ=as.numeric(args[2])+rnorm(1,sd=.001)))
+  # update the seqblock objects
   n.idx <- nrow(part.data)
   bdata <- seqblock2k(object.name = "bdata", 
                       id.vals = part.data[n.idx, "QID"],  
@@ -88,7 +84,6 @@ tr<-strsplit(tr,split = ",")[[1]]
 tr<-as.numeric(tr)
 
 load("/var/www/r.cess.cl/public_html/sp/nuevaBDfinal.RData")
-
 
 
 #if(length(args) != 5){
@@ -454,9 +449,9 @@ fcn.treat4 <- function(gender, econ, mode, pair, v){
 #fcn.treat4("F", "nivel1", "3a", "co_3a3b" )
 
 
-###############################
-### Incorporate Qualtrics data
-###############################
+#########################
+### Random asignment
+#########################
 
 
 # Simulation data that would come from Qualtrics
@@ -478,9 +473,9 @@ QID <- args[6]
 ### Adaptation from Qualtrics to R
 gender<-if(genderQ=="1") "M" else "F"
 
-econ<- if(mode1Q=="1") {"nivel1"
-} else if(mode1Q=="2")  {"nivel2"
-} else if(mode1Q=="3")  { "nivel3" } else {"nivel4"}  
+econ<- if(econQ=="1") {"nivel1"
+} else if(econQ=="2")  {"nivel2"
+} else if(econQ=="3")  { "nivel3" } else {"nivel4"}  
 
 pg<- if(pgQ=="1") "a" else "b"   
 
@@ -514,9 +509,9 @@ pair<-paste0("co_", pairvct[1], pairvct[2])
 #### list of treatment functions
 #
 namedVF<-list(control=fcn.control, treat1=fcn.treat1, treat2=fcn.treat2, treat3=fcn.treat3, treat4=fcn.treat4  )
-#namedVF<-list(control=fcn.treat4, treat1=fcn.treat4, treat2=fcn.treat4, treat3=fcn.treat4, treat4=fcn.treat4 )
+#namedVF<-list(control=fcn.treat2, treat1=fcn.treat2, treat2=fcn.treat2, treat3=fcn.treat2, treat4=fcn.treat2 )
 
-#### use treatments "tr" vector selected in block randomization at the beginning of the script
+#### Random selection of treatment without replacement
 selected<-c(namedVF[tr[1]],namedVF[tr[2]])
 selectedQID<-names(selected) ## list of selected treatments to send to Qualtrics
 
@@ -543,8 +538,8 @@ fcn.payment <- function(gender, econ, mode, pair, selectedTreat){
   } else if (selectedTreat=="treat1") { payment[order(-payment$val_pesos_pension),]
   } else if (selectedTreat=="treat2") { payment[order(-payment$val_pesos_pension),]
   } else if (selectedTreat=="treat3") { payment[order(-payment$VPN),]
-          } else {payment[order(-payment$VPN),]}
-              
+  } else {payment[order(-payment$VPN),]}
+  
   payment$opcion<-1:15
   
   payment$VPN<-ifelse(is.na(payment$VPN), 0, payment$VPN )
