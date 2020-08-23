@@ -1,8 +1,9 @@
-#########################################
-##### Formatos y Métricas Scomp
+#####################################################
+##### Choice Architecture Improves Pension Selection
 ##### code: Denise Laroze 
-##### 2019
-#########################################
+##### 2020 replication
+##### Prepared for re-submition
+#####################################################
 
 
 library(stargazer)
@@ -25,36 +26,12 @@ library(matrixStats)
 
 rm(list=ls())
 
-setwd("C:/Users/Denise Laroze/Dropbox/CESS-Santiago/archive/Pensions/Data Analysis - prelim")
-#load("Data/clean_data.Rdata")
+setwd("C:/Users/Denise Laroze/Dropbox/CESS-Santiago/archive/Pensions/Data Analysis")
+#load("Data/clean_data.Rdata") # other subset of the data used for robustness checks. Substantive results are the same.  
 load("Data/all_data.Rdata")
 fig.path<-"Figures"
 colors<-c("blue",  "purple", "darkgreen", "orange", "red")
 
-
-#############
-## subsamples
-#############
-
-vars<-c("treat1", "treat2", "treat3", "treat4")
-rp<-dfl[dfl$rp ==1 & dfl$treat %in% vars ,]
-t1.4<-dfl[dfl$treat %in% vars ,]
-
-
-vars<-c("treat1", "treat2", "treat3")
-t1.3<-dfl[dfl$treat %in% vars ,]
-
-
-
-
-dfl.control<-subset(dfl, treat=="control")
-dfl.t1<-subset(dfl, treat=="treat1")
-dfl.t2<-subset(dfl, treat=="treat2")
-dfl.t3<-subset(dfl, treat=="treat3")
-dfl.t4<-subset(dfl, treat=="treat4")
-
-
-dfl.base<-rbind(dfl.control, dfl.t1)
 
 ####################
 ## Recode variables
@@ -81,9 +58,11 @@ t1$rp<-ifelse(t1$ob_mode=="rp", 1, 0) # rp is mode 1
 
 
 dfl$max<-ifelse(dfl$ob_mode=="rp" & dfl$reward==1400, 1, ifelse(dfl$reward==1500, 1, 0)) # because of a coding mistake max for programmed withdrawls was 1400
+dfl$top3<-ifelse(dfl$ob_mode=="rp" & dfl$reward>=900, 1, ifelse(dfl$reward>=1200, 1, 0)) # because of a coding mistake max for programmed withdrawls was 1400
+
 #View(dfl[, c("ob_mode", "reward", "max" )])
 
-t1$max<-ifelse(t1$ob_mode=="rp" & t1$reward==1400, 1, ifelse(t1$reward==1500, 1, 0)) 
+#t1$max<-ifelse(t1$ob_mode=="rp" & t1$reward==1400, 1, ifelse(t1$reward==1500, 1, 0)) 
 
 
 
@@ -105,10 +84,35 @@ dfl$risk_fact<-ifelse(dfl$Qrisk1=="100% probabilidades de ganar $720", "Risk lev
                        
 
 
+#############
+## subsamples
+#############
 
-############
-## lm Models
-############
+vars<-c("treat1", "treat2", "treat3", "treat4")
+rp<-dfl[dfl$rp ==1 & dfl$treat %in% vars ,]
+t1.4<-dfl[dfl$treat %in% vars ,]
+
+
+vars<-c("treat1", "treat2", "treat3")
+t1.3<-dfl[dfl$treat %in% vars ,]
+
+
+
+
+dfl.control<-subset(dfl, treat=="control")
+dfl.t1<-subset(dfl, treat=="treat1")
+dfl.t2<-subset(dfl, treat=="treat2")
+dfl.t3<-subset(dfl, treat=="treat3")
+dfl.t4<-subset(dfl, treat=="treat4")
+
+
+dfl.base<-rbind(dfl.control, dfl.t1)
+
+
+
+#####################
+## lm Models Table 4
+####################
 table(dfl$treat)
 
 lm1<-lm(reward ~ treat, data = dfl)
@@ -128,11 +132,11 @@ stargazer(lm1.cl, lm2.cl, out="Tables/regression.tex", type="latex",
           ),
           dep.var.caption = "", star.cutoffs = c(0.05, 0.01, 0.001), notes.align = "l",
           label="tbl:treat_effects",  table.placement = "H",
-          title = "OLS estimations on amount earned in offer selection with participant clustered standared errors.", no.space=TRUE)
+          title = "OLS estimations on amount earned in offer selection with participant clustered standard errors.", no.space=TRUE)
 
-###########################
-## GLM Maximal offer selections
-#############################
+########################################
+## GLM Maximal offer selections Table 5
+########################################
 
 # Tot sample
 set.seed(2365)
@@ -163,7 +167,7 @@ glm3.cl<-bootcov(glm3,cluster=t1.3$uid)
 
 stargazer(lm1.cl, lm2.cl, glm3.cl)
 
-#Print table
+###Print Table 5
 stargazer(glm1.cl, glm4.cl, glm2.cl, out="Tables/glm_models.tex", type="latex",
           #title = "Regression Results", 
           out.header = F,model.names = F, covariate.labels = c("T.1", "T.2", "T.3", "T.4","Constant"), 
@@ -172,29 +176,73 @@ stargazer(glm1.cl, glm4.cl, glm2.cl, out="Tables/glm_models.tex", type="latex",
           #add.lines = list(c("N", nobs(glm4), nobs(glm3) )),
           dep.var.caption = "", star.cutoffs = c(0.05, 0.01, 0.001), notes.align = "l",
           label="tbl:glm_treat_effects",  table.placement = "H",
-          title = "Logit estimations on maximal offer selection with participant bootstrap clustered standared errors. Model 1 includes all treatments in the sample. Model 2 includes only  and Models 2-3 include only observations for people who saw treatments 1--4.", 
+          title = "Logit estimations on maximal offer selection with participant bootstrap clustered standard errors. Model 1 includes all treatments in the sample. Models 2-3 include only observations for people who saw treatments 1--4.", 
           no.space=TRUE)
 
 
 
 #############
-#### Balance
+#### Balance Tables 3 and A.1
 ##############
 
 
+# Table A.1
+names<-c("Variable", "Treatment", "N")
 
-tbl<-ddply(dfl, .(Qgender, QSEC, treat) , summarise,
-           #n.treat = length(unique(treat)),
-           subj.n = length(unique(uid))
+tbl1<-ddply(dfl, .(Qgender, treat) , summarise,
+            #n.treat = length(unique(treat)),
+            subj.n = length(unique(uid))
 )
-tbl
+names(tbl1)<-names
+
+
+tbl2<-ddply(dfl, .(QSEC, treat) , summarise,
+            subj.n = length(unique(uid))
+)
+names(tbl2)<-names
+
+tbl3<-ddply(dfl, .(age_cat,treat) , summarise,
+            subj.n = length(unique(uid))
+            
+)
+names(tbl3)<-names
+
+tbl4<-ddply(dfl, .(risk_fact, treat) , summarise,
+            subj.n = length(unique(uid))
+)
+names(tbl4)<-names
+
+tbl5<-ddply(dfl, .(financial_lit_fact, treat) , summarise,
+            subj.n = length(unique(uid))
+            
+)
+names(tbl5)<-names
+
+#factor(age_cat) + Qgender +QSEC + risk_fact + financial_lit_fact
+
+tbl<-rbind(tbl1, tbl2, tbl3, tbl4, tbl5)
+
+
+tbl<-reshape(tbl, idvar = "Variable", timevar = "Treatment", direction = "wide")
+
+tbl$Total<-rowSums(tbl[2:6])
+
+tbl$PC_Control<-round(tbl$N.control/tbl$Total, 4)*100
+tbl$PC_T.1<-round(tbl$N.treat1/tbl$Total, 4)*100
+tbl$PC_T.2<-round(tbl$N.treat2/tbl$Total, 4)*100
+tbl$PC_T.3<-round(tbl$N.treat3/tbl$Total, 4)*100
+tbl$PC_T.4<-round(tbl$N.treat4/tbl$Total, 4)*100
+
+
+
+
 xt<-xtable(tbl)
 print(xt, type="latex", file=("Tables/balance_numbers.tex"), floating=FALSE, include.rownames=FALSE)
 
 
 
 
-
+### Table 3
 b<-multinom(treat ~ factor(age_cat) + Qgender +QSEC + risk_fact + financial_lit_fact, data = dfl)
 summary(b)
 
@@ -228,7 +276,7 @@ xtable(table)
 ## Figures Long
 ################
 #############################
-## Hist-Treat
+## Hist-Treat - Fig. 8
 #############################
 
 #se crea una base llamada tratamiento solo con tratamiento y op
@@ -242,7 +290,7 @@ ggplot(plot.df, aes(x = factor(treat), y = reward, fill=factor(treat))) +
   scale_fill_manual("", values=colors)+
   geom_errorbar(aes(ymin=(reward-ci), ymax=(reward+ci)), width=.3)+
   theme(legend.position = "none")+
-  ylab("Ganancia expto") + xlab("") +
+  ylab("Earnings (CLP)") + xlab("") +
   theme(axis.text.x = element_text( color="black", 
                                    size=10),
         axis.text.y = element_text( color="black", 
@@ -253,9 +301,9 @@ ggplot(plot.df, aes(x = factor(treat), y = reward, fill=factor(treat))) +
 
 ggsave(paste0("efecto_tratamiento_dfl", ".png"), path=fig.path,  width = 7, height = 4)
 
-######################################
-#### Max offer selection by treatment
-######################################
+###############################################
+#### Max offer selection by treatment - Fig. 9
+###############################################
 #se crea una base llamada tratamiento solo con tratamiento y op
 plot.df <- summarySE(dfl, measurevar="max", groupvars=c("treat"), na.rm=T)
 
@@ -267,7 +315,7 @@ ggplot(plot.df, aes(x = factor(treat), y = max, fill=factor(treat))) +
   scale_fill_manual("", values=colors)+
   geom_errorbar(aes(ymin=(max-ci), ymax=(max+ci)), width=.3)+
   theme(legend.position = "none")+
-  ylab("Proporcion que elige opción con VNP más alto") + xlab("") +
+  ylab("Proportion that elects option with highest NPV") + xlab("") +
   theme(axis.text.x = element_text( color="black", 
                                     size=10),
         axis.text.y = element_text( color="black", 
@@ -278,6 +326,45 @@ ggplot(plot.df, aes(x = factor(treat), y = max, fill=factor(treat))) +
 
 
 ggsave(paste0("max_offer_tratamiento_dfl", ".png"), path=fig.path,  width = 7, height = 4)
+
+
+
+
+
+###############################################
+#### Top 3 offer selection by treatment - Fig. 11
+###############################################
+#se crea una base llamada tratamiento solo con tratamiento y op
+plot.df <- summarySE(dfl, measurevar="top3", groupvars=c("treat"), na.rm=T)
+
+real<-c(1, NA, 0.476, 0, 0, 0) #### Data provided by the Superintendencia de Pensiones
+
+plot.df<-rbind(plot.df, real)
+plot.df$treat[6]<-"Population"
+
+plot.df<- plot.df[!is.na(plot.df$treat),] # Se saca la primera fila ya que por defecto asigna a esta cuando la persona elige opcion pero no tratamiento
+
+
+ggplot(plot.df, aes(x = factor(treat), y = top3, fill=factor(treat))) + 
+  geom_bar(position = position_dodge(width=0.3), stat="identity") +
+  scale_fill_manual("", values=c("blue", "cyan3"  ,"purple", "darkgreen", "orange", "red"))+
+  geom_errorbar(aes(ymin=(top3-ci), ymax=(top3+ci)), width=.3)+
+  theme(legend.position = "none")+
+  ylab("Proportion that elects one of the top 3 option") + xlab("") +
+  theme(axis.text.x = element_text( color="black", 
+                                    size=10),
+        axis.text.y = element_text( color="black", 
+                                    size=10, angle=0))+
+  ylim(0,1) +
+  #scale_y_continuous(breaks = c(0,1))+
+  scale_x_discrete("",labels= c("control"="Control","treat1"="T. 1","treat2"="T. 2", "treat3"="T. 3","treat4"="T. 4"))
+
+
+ggsave(paste0("top3_offer_tratamiento_dfl", ".png"), path=fig.path,  width = 7, height = 4)
+
+
+
+
 
 #############################
 ## Hist-Treat*gender
@@ -294,7 +381,7 @@ ggplot(plot.df, aes(x = factor(treat), y = reward, fill=factor(treat))) +
   scale_fill_manual("", values=colors)+
   geom_errorbar(aes(ymin=(reward-ci), ymax=(reward+ci)), width=.3)+
   theme(legend.position = "none")+
-  ylab("Ganancia expto") + xlab("") +
+  ylab("") + xlab("") +
   theme(axis.text.x = element_text( color="black", 
                                     size=10),
         axis.text.y = element_text( color="black", 
@@ -355,7 +442,7 @@ dev.off()
 
 
 #################
-## Densidad edad
+## Densidad edad Fig. A.6
 ################
 
 
@@ -373,9 +460,9 @@ ggplot(plot.df, aes(x=Age, fill=treat)) +
 ggsave(paste0("Age_dist", ".png"), path=fig.path,  width = 7, height = 4)
 
 
-############
-## Dist genero 
-############
+########################
+## Dist genero Fig. A.7
+########################
 
 ### cambiar todos las casilleras vacías en NA
 
@@ -389,29 +476,29 @@ plot.df$gender<-ifelse(plot.df$Qgender=="F", "Female", "Male")
 
 png(filename="Figures/Gender_dist.png", width = 480, height = 480, units = "px")
 
-barplot(prop.table(table(plot.df$gender)),col=c("blue", "red"), ylim = c(0,0.6),ylab = "Frecuencias relativas", main ="", xlab="Sexo")
+barplot(prop.table(table(plot.df$gender)),col=c("blue", "red"), ylim = c(0,0.6),ylab = "Frecuencias relativas", main ="", xlab="")
 
 dev.off()
 
 
 
-############################
-## Dist nivel soc economico
-############################
+#################################
+## Dist socio-economic level A.8
+#################################
 
 prop.table(table(df$QSEC))
 
 
 png(filename="Figures/SEC_dist.png", width = 480, height = 480, units = "px")
 
-barplot(prop.table(table(df$QSEC)),col="grey40", ylim = c(0,1),ylab = "Relative frequencies", main ="", xlab="SEC",
-        names.arg=c("SEC 1", "SEC 2", "SEc 3", "SEc 4"))
+barplot(prop.table(table(df$QSEC)),col="grey40", ylim = c(0,1),ylab = "Relative frequencies", main ="", xlab="",
+        names.arg=c("SEC 1", "SEC 2", "SEC 3", "SEC 4"))
 
 dev.off()
 
 
 ###########################
-### Gender Heterogeneity
+### Gender Heterogeneity Fig. A.9
 ###########################
 ## Figure gender het - BART plot
 
@@ -506,7 +593,7 @@ ggsave(gender_het, filename = "gender_het1_alltreats.pdf", path=fig.path, device
 
 
 ###########################
-### SEC Heterogeneity
+### SEC Heterogeneity Fig. A.10
 ###########################
 ## Figure gender het - BART plot
 
@@ -607,7 +694,7 @@ ggsave(SEC_het, filename = "SEC_het1_alltreats.pdf", path=fig.path, device = "pd
 
 
 ####################################
-### Financial literacy Heterogeneity
+### Financial literacy Heterogeneity Fig. 10
 ####################################
 ## Figure gender het - BART plot
 
@@ -712,7 +799,7 @@ ggsave(FL_het, filename = "FL_het1_alltreats.pdf", path=fig.path, device = "pdf"
 
 
 ##############################################
-#### What explains decisions in control and T1
+#### What explains decisions in control and T1?
 ##############################################
 
 
