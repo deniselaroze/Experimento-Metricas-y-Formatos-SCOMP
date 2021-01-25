@@ -350,7 +350,7 @@ ggplot(plot.df, aes(x = factor(treat), y = top3, fill=factor(treat))) +
   scale_fill_manual("", values=c("blue", "cyan3"  ,"purple", "darkgreen", "orange", "red"))+
   geom_errorbar(aes(ymin=(top3-ci), ymax=(top3+ci)), width=.3)+
   theme(legend.position = "none")+
-  ylab("Proportion that elects one of the top 3 option") + xlab("") +
+  ylab("Proportion that elects one of the top 3 options") + xlab("") +
   theme(axis.text.x = element_text( color="black", 
                                     size=10),
         axis.text.y = element_text( color="black", 
@@ -464,7 +464,7 @@ ggsave(paste0("Age_dist", ".png"), path=fig.path,  width = 7, height = 4)
 ## Dist genero Fig. A.7
 ########################
 
-### cambiar todos las casilleras vacías en NA
+### cambiar todos las casilleras vac?as en NA
 
 #Proportion gender
 prop.table(table(df$Qgender))
