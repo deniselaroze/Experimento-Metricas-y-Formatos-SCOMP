@@ -134,6 +134,19 @@ stargazer(lm1.cl, lm2.cl, out="Tables/regression.tex", type="latex",
           label="tbl:treat_effects",  table.placement = "H",
           title = "OLS estimations on amount earned in offer selection with participant clustered standard errors.", no.space=TRUE)
 
+
+stargazer(lm1.cl, lm2.cl, out="Tables/regression.html", type="html",
+          #title = "Regression Results", 
+          out.header = F,model.names = F, covariate.labels = c("T.1", "T.2", "T.3", "T.4","Edad", "Hombre", "NSE 2", "NSE 3", "NSE 4", "Nivel Riesgo 2", "Nivel Riesgo 3", "Nivel Riesgo 4", "Nivel Riesgo 5" ,"Alf. Fin. Bajo", 
+                                                               "Alf. Fin. Medio", "Alf. Fin. Alto", "Constante"), 
+          dep.var.labels.include = F,
+          add.lines = list(c("N", nobs(lm1), nobs(lm2) ),
+                           c("Adjusted R$^{2}$ ",round(summary(lm1)$adj.r.squared, 3),round(summary(lm2)$adj.r.squared,3))
+          ),
+          dep.var.caption = "", star.cutoffs = c(0.05, 0.01, 0.001), notes.align = "l",
+          label="tbl:treat_effects",  table.placement = "H",
+          title = "", no.space=TRUE)
+
 ########################################
 ## GLM Maximal offer selections Table 5
 ########################################
